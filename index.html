@@ -3,16 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Barding Industries: Unlocking untapped critical minerals to secure vital supply chains, anywhere." />
+
+  <!-- Primary meta -->
   <title>Barding Industries</title>
+  <meta name="description" content="Barding Industries unlocks untapped critical minerals to secure vital supply chains, anywhere. The Cliban Platform uses biological processes to extract and separate rare earth elements from secondary sources." />
+  <meta name="keywords" content="rare earth elements, critical minerals, biomining, bioleaching, REE extraction, supply chain security, Cliban Platform" />
+  <meta name="author" content="Barding Industries" />
+  <link rel="canonical" href="https://www.bardingindustries.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://www.bardingindustries.com/" />
+  <meta property="og:title"       content="Barding Industries" />
+  <meta property="og:description" content="Unlocking untapped critical minerals to secure vital supply chains, anywhere. Biological REE extraction and separation via the Cliban Platform." />
+  <meta property="og:image"       content="https://www.bardingindustries.com/assets/img/og-image.png" />
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Barding Industries" />
+  <meta name="twitter:description" content="Unlocking untapped critical minerals to secure vital supply chains, anywhere." />
+  <meta name="twitter:image"       content="https://www.bardingindustries.com/assets/img/og-image.png" />
+
+  <!-- Favicon -->
+  <link rel="icon"             type="image/png" sizes="32x32" href="assets/img/logo_sq.png" />
+  <link rel="icon"             type="image/png" sizes="16x16" href="assets/img/logo_sq.png" />
+  <link rel="apple-touch-icon" sizes="180x180"               href="assets/img/logo_sq.png" />
+
   <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
   <!-- ══════════════════════════════
        NAVBAR
   ══════════════════════════════ -->
-  <nav id="navbar">
+  <nav id="navbar" data-compact-h="68">
     <div class="container nav-inner">
       <a href="#hero" aria-label="Barding Industries home">
         <img class="nav-logo" src="assets/img/logo.png" alt="Barding Industries" />
@@ -40,21 +65,26 @@
   <section id="hero">
     <div class="hero-bg"></div>
     <div class="hero-grid"></div>
+    <div class="hero-grid-purple" id="hero-grid-purple"></div>
     <div class="hero-grid-cursor" id="hero-grid-cursor"></div>
-    <div class="container">
+    <div class="container hero-layout">
       <div class="hero-content">
         <p class="hero-eyebrow">Critical Minerals · Biomining · Supply Chain Security</p>
         <h1 class="hero-title">
-          Unlocking untapped critical minerals to secure vital supply chains, anywhere.
+          Unlocking untapped critical minerals to secure vital supply chains, <span class="hero-anywhere">anywhere.</span>
         </h1>
         <p class="hero-sub">
-          Barding Industries develops the <strong>Cliban Platform</strong>, a grade-agnostic biological system for rare earth element extraction and separation from secondary sources.
+          Barding Industries develops the <strong>Cliban Platform</strong>, proprietary biotechnology for extracting and separating rare earth elements from feedstocks that conventional methods leave behind.
         </p>
-        <a class="hero-scroll" href="#rees" aria-label="Scroll to learn more">
-          Learn More
-          <span class="scroll-arrow" aria-hidden="true"></span>
-        </a>
+        <div class="hero-actions">
+          <a class="btn-hero-primary" href="#platform">Explore the Platform</a>
+          <a class="btn-hero-secondary" href="#footer-contact">Get in Touch</a>
+        </div>
       </div>
+      <a class="hero-scroll" href="#rees" aria-label="Scroll to learn more">
+        Learn More
+        <span class="scroll-arrow" aria-hidden="true"></span>
+      </a>
     </div>
   </section>
 
@@ -64,50 +94,67 @@
   ══════════════════════════════ -->
   <section id="rees">
     <div class="container">
-      <div class="rees-grid">
+
+      <div class="rees-header reveal">
+        <span class="section-label">The Strategic Challenge</span>
+        <h2 class="section-title">Rare earths power the modern world. One nation controls the supply.</h2>
+      </div>
+
+      <!-- Beat 1: three big stats -->
+      <div class="rees-stats">
+        <div class="rees-stat reveal">
+          <span class="rees-stat-num" data-to="80" data-prefix=">" data-suffix="%">&gt;80%</span>
+          <span class="rees-stat-label">U.S. reliance on foreign rare earth processing</span>
+        </div>
+        <div class="rees-stat reveal reveal-delay-1">
+          <span class="rees-stat-num" data-to="95" data-prefix=">" data-suffix="%">&gt;95%</span>
+          <span class="rees-stat-label">of global REE supply controlled by a single strategic competitor</span>
+        </div>
+        <div class="rees-stat reveal reveal-delay-2">
+          <span class="rees-stat-num" data-to="12">12 <span class="rees-stat-of">of 17</span></span>
+          <span class="rees-stat-label">rare earth elements already weaponized by a strategic competitor</span>
+        </div>
+      </div>
+
+      <!-- Beat 2: two-column body -->
+      <div class="rees-body">
 
         <div class="reveal">
-          <span class="section-label">The Strategic Challenge</span>
-          <h2 class="section-title">What are REEs, and why do they matter?</h2>
-          <p class="section-body">
-            Rare Earth Elements are 17 critical minerals found in virtually every advanced technology we depend on: from defense systems and electric vehicles to smartphones and wind turbines. Without them, modern civilization stops.
-          </p>
-          <ul class="rees-list">
-            <li class="rees-item">
-              <span class="rees-dot" aria-hidden="true"></span>
-              A single F-35 fighter jet requires over 400 kg of rare earth materials
-            </li>
-            <li class="rees-item">
-              <span class="rees-dot" aria-hidden="true"></span>
-              Every EV motor relies on neodymium magnets, a rare earth product
-            </li>
-            <li class="rees-item">
-              <span class="rees-dot" aria-hidden="true"></span>
-              Wind turbines, MRI machines, and consumer electronics all depend on REE supply chains
-            </li>
-            <li class="rees-item">
-              <span class="rees-dot" aria-hidden="true"></span>
-              The global REE market is projected to exceed $20B by 2030
-            </li>
-          </ul>
+          <h3 class="rees-sub-title">A strategic competitor controls what the West can buy.</h3>
+          <p class="section-body">That concentration is not theoretical. A strategic competitor has already restricted rare earth exports as a geopolitical lever, cutting supply to Western manufacturers and defense contractors without warning or recourse.</p>
+          <div class="rees-callouts">
+            <div class="rees-callout-item">
+              <span class="rees-callout-num">7x</span>
+              <span class="rees-callout-label">projected increase in global REE demand by 2040 across AI, clean energy, and defense</span>
+            </div>
+            <div class="rees-callout-item">
+              <span class="rees-callout-num">2027</span>
+              <span class="rees-callout-label">DFARS mandate: U.S.-origin sourcing required for defense</span>
+            </div>
+          </div>
         </div>
 
-        <div class="rees-stat-block reveal reveal-delay-2">
-          <div class="stat-card">
-            <div class="stat-number"><span>~85%</span></div>
-            <p class="stat-desc">
-              Of global rare earth production is controlled by a single strategic competitor, creating a critical chokepoint in Western supply chains.
-            </p>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number"><span>17</span></div>
-            <p class="stat-desc">
-              Elements classified as rare earths, each with unique magnetic, optical, and catalytic properties that cannot be easily substituted.
-            </p>
+        <div class="reveal reveal-delay-2">
+          <h3 class="rees-sub-title">The minerals are already here, but wasted.</h3>
+          <p class="section-body">The bottleneck is processing, not geology. Conventional methods cannot handle low-grade feedstocks, so most of what the U.S. extracts is discarded as waste before it ever reaches a supply chain.</p>
+          <div class="rees-waste">
+            <div class="rees-waste-row">
+              <span class="rees-waste-num">51 kt</span>
+              <span class="rees-waste-desc">REO extracted in the U.S. annually</span>
+            </div>
+            <div class="rees-waste-row">
+              <span class="rees-waste-num rees-waste-num--dim">9 kt</span>
+              <span class="rees-waste-desc">actually purified</span>
+            </div>
+            <div class="rees-waste-row">
+              <span class="rees-waste-num rees-waste-num--lost">20–30 kt</span>
+              <span class="rees-waste-desc">discarded as unprocessable waste every year</span>
+            </div>
           </div>
         </div>
 
       </div>
+
     </div>
   </section>
 
@@ -122,15 +169,19 @@
       <span class="section-label">The Cliban Platform</span>
       <h2 class="section-title">A biological solution<br/>to a geopolitical problem</h2>
       <p class="section-body">
-        Our proprietary bioleaching technology processes low-grade and secondary feedstocks
-        that conventional methods cannot, unlocking REE sources previously considered uneconomical.
+        The rare earth problem is not scarcity. It is the inability to process what already exists. Cliban changes that.
       </p>
       <div class="platform-tags">
         <span class="tag-pill">Grade-Agnostic</span>
-        <span class="tag-pill">Secondary Sources</span>
-        <span class="tag-pill">Scalable Process</span>
-        <span class="tag-pill">Defense Supply Chain</span>
+        <span class="tag-pill">Secondary Feedstocks</span>
+        <span class="tag-pill">Single-Stage Separation</span>
+        <span class="tag-pill">Defense-Ready</span>
+        <span class="tag-pill">Extreme-Environment Capable</span>
       </div>
+      <p class="platform-scroll-hint">
+        Scroll to explore
+        <span class="scroll-arrow" aria-hidden="true"></span>
+      </p>
     </div>
 
     <!-- Sticky scroll zone -->
@@ -144,7 +195,7 @@
             <span class="step-num">.01</span>
             <div class="step-text">
               <h3 class="step-title">Feedstock</h3>
-              <p class="step-desc">Mine tailings, electronic waste, and low-grade ores that conventional hydrometallurgy cannot economically process. The untapped reserves hiding in plain sight.</p>
+              <p class="step-desc">Mine tailings, e-waste, and sub-economic ores the industry has written off. Cliban starts where conventional refiners stop.</p>
             </div>
           </div>
 
@@ -152,7 +203,7 @@
             <span class="step-num">.02</span>
             <div class="step-text">
               <h3 class="step-title">Extraction</h3>
-              <p class="step-desc">Proprietary microorganisms mobilise rare earth elements from the host matrix through targeted bioleaching reactions. No harsh solvents, no high-temperature processing.</p>
+              <p class="step-desc">Proprietary microorganisms mobilize rare earth elements from the feedstock without acids, solvents, or high-temperature processing.</p>
             </div>
           </div>
 
@@ -160,7 +211,7 @@
             <span class="step-num">.03</span>
             <div class="step-text">
               <h3 class="step-title">Separation</h3>
-              <p class="step-desc">Selective biological mechanisms isolate individual REEs, a process that typically requires expensive, multi-stage solvent extraction cascades to achieve conventionally.</p>
+              <p class="step-desc">Selective biological mechanisms isolate individual rare earth elements in a single integrated process, replacing multi-stage solvent extraction cascades.</p>
             </div>
           </div>
 
@@ -168,7 +219,7 @@
             <span class="step-num">.04</span>
             <div class="step-text">
               <h3 class="step-title">Product</h3>
-              <p class="step-desc">High-purity rare earth compounds delivered into defence, clean energy, and electronics supply chains from sources once considered off-limits.</p>
+              <p class="step-desc">High-purity rare earth compounds delivered into defense, clean energy, and electronics supply chains from sources conventional refiners cannot reach.</p>
             </div>
           </div>
 
@@ -177,35 +228,181 @@
         <!-- RIGHT: large illustrations -->
         <div class="platform-visuals-col">
 
-          <!-- Visual 0: Feedstock — replace src with generated image -->
+          <!-- Visual 0: Feedstock -->
           <div class="platform-visual active" data-visual="0">
-            <div class="visual-placeholder">
-              <span class="visual-placeholder-label">Feedstock</span>
+            <div class="pv pv--feedstock">
+              <p class="pv-fs-claim">We process feedstocks conventional refiners reject.</p>
+              <div class="pv-fs-rows">
+
+                <div class="pv-fs-row pv-fs-r1">
+                  <span class="pv-fs-icon" aria-hidden="true"><i class="fa-solid fa-mountain"></i></span>
+                  <div class="pv-fs-data">
+                    <div class="pv-fs-label-row">
+                      <span class="pv-fs-name">Mine tailings</span>
+                      <span class="pv-fs-grade">&lt;1% TREO</span>
+                    </div>
+                    <div class="pv-fs-track">
+                      <div class="pv-fs-fill" style="--pct: 2%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pv-fs-row pv-fs-r2">
+                  <span class="pv-fs-icon" aria-hidden="true"><i class="fa-solid fa-microchip"></i></span>
+                  <div class="pv-fs-data">
+                    <div class="pv-fs-label-row">
+                      <span class="pv-fs-name">E-waste</span>
+                      <span class="pv-fs-grade">1–5% TREO</span>
+                    </div>
+                    <div class="pv-fs-track">
+                      <div class="pv-fs-fill" style="--pct: 12%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pv-fs-row pv-fs-r3">
+                  <span class="pv-fs-icon" aria-hidden="true"><i class="fa-solid fa-industry"></i></span>
+                  <div class="pv-fs-data">
+                    <div class="pv-fs-label-row">
+                      <span class="pv-fs-name">Phosphate by-products</span>
+                      <span class="pv-fs-grade">0.1–0.5% TREO</span>
+                    </div>
+                    <div class="pv-fs-track">
+                      <div class="pv-fs-fill" style="--pct: 5%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pv-fs-row pv-fs-r4">
+                  <span class="pv-fs-icon" aria-hidden="true"><i class="fa-solid fa-gem"></i></span>
+                  <div class="pv-fs-data">
+                    <div class="pv-fs-label-row">
+                      <span class="pv-fs-name">Sub-economic ore</span>
+                      <span class="pv-fs-grade">5–25% TREO</span>
+                    </div>
+                    <div class="pv-fs-track">
+                      <div class="pv-fs-fill" style="--pct: 75%"></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="pv-fs-axis">
+                <span class="pv-fs-axis-lo">0%</span>
+                <div class="pv-fs-axis-hi">
+                  <span class="pv-fs-axis-num">30% TREO</span>
+                  <span class="pv-fs-axis-sub">conventional minimum</span>
+                </div>
+              </div>
+              <p class="pv-fs-note">No minimum grade required. Cliban handles all four and more.</p>
             </div>
           </div>
 
-          <!-- Visual 1: Extraction — replace src with generated image -->
+          <!-- Visual 1: Extraction -->
           <div class="platform-visual" data-visual="1">
-            <div class="visual-placeholder">
-              <span class="visual-placeholder-label">Extraction</span>
+            <div class="pv pv--extraction">
+              <svg class="pv-ext-svg" viewBox="0 0 420 285" aria-hidden="true">
+                <!-- flat-top hex grid + microbe dots generated by JS -->
+              </svg>
+              <div class="pv-ext-footer">
+                <p class="pv-ext-caption">Our <strong>microbes dissolve</strong> the ore, releasing REE ions into solution.</p>
+                <div class="pv-ext-attrs">
+                  <span class="pv-attr">Robust growth</span>
+                  <span class="pv-attr">Low-grade tuned</span>
+                  <span class="pv-attr">Ambient conditions</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Visual 2: Separation — replace src with generated image -->
+          <!-- Visual 2: Separation -->
           <div class="platform-visual" data-visual="2">
-            <div class="visual-placeholder">
-              <span class="visual-placeholder-label">Separation</span>
+            <div class="pv pv--separation">
+              <svg class="pv-sep-svg" viewBox="0 0 420 260" aria-hidden="true">
+                <!-- floating hexes + arrows + element tiles generated by JS -->
+              </svg>
+              <p class="pv-sep-caption">Our <strong>protein scaffold separates</strong> the metals.</p>
             </div>
           </div>
 
-          <!-- Visual 3: Product — replace src with generated image -->
+          <!-- Visual 3: Product -->
           <div class="platform-visual" data-visual="3">
-            <div class="visual-placeholder">
-              <span class="visual-placeholder-label">Product</span>
+            <div class="pv pv--product">
+
+              <!-- REE output strip: the five elements Cliban delivers -->
+              <div class="pv-prod-strip">
+                <div class="pv-prod-el pv-pe--nd"><span class="pv-pe-num">60</span><span class="pv-pe-sym">Nd</span></div>
+                <div class="pv-prod-el pv-pe--tb"><span class="pv-pe-num">65</span><span class="pv-pe-sym">Tb</span></div>
+                <div class="pv-prod-el pv-pe--dy"><span class="pv-pe-num">66</span><span class="pv-pe-sym">Dy</span></div>
+                <div class="pv-prod-el pv-pe--sc"><span class="pv-pe-num">21</span><span class="pv-pe-sym">Sc</span></div>
+                <div class="pv-prod-el pv-pe--y"><span class="pv-pe-num">39</span><span class="pv-pe-sym">Y</span></div>
+              </div>
+
+              <!-- Market destination tiles: each shows which elements feed it -->
+              <div class="pv-prod-markets">
+                <div class="pv-mkt-tile">
+                  <div class="pv-mkt-header">
+                    <i class="fa-solid fa-magnet pv-mkt-ico" aria-hidden="true"></i>
+                    <span class="pv-mkt-label">Permanent Magnets</span>
+                  </div>
+                  <span class="pv-mkt-apps">EV motors, wind turbines, defense</span>
+                  <div class="pv-mkt-elems">
+                    <span class="pv-me-dot pv-me--nd"></span>
+                    <span class="pv-me-dot pv-me--dy"></span>
+                    <span class="pv-me-dot pv-me--tb"></span>
+                  </div>
+                </div>
+                <div class="pv-mkt-tile">
+                  <div class="pv-mkt-header">
+                    <i class="fa-solid fa-rocket pv-mkt-ico" aria-hidden="true"></i>
+                    <span class="pv-mkt-label">Aerospace</span>
+                  </div>
+                  <span class="pv-mkt-apps">lightweight alloys, fuel cells</span>
+                  <div class="pv-mkt-elems">
+                    <span class="pv-me-dot pv-me--sc"></span>
+                    <span class="pv-me-dot pv-me--y"></span>
+                  </div>
+                </div>
+                <div class="pv-mkt-tile">
+                  <div class="pv-mkt-header">
+                    <i class="fa-solid fa-bolt pv-mkt-ico" aria-hidden="true"></i>
+                    <span class="pv-mkt-label">Clean Energy</span>
+                  </div>
+                  <span class="pv-mkt-apps">solid oxide fuel cells, phosphors</span>
+                  <div class="pv-mkt-elems">
+                    <span class="pv-me-dot pv-me--tb"></span>
+                    <span class="pv-me-dot pv-me--y"></span>
+                    <span class="pv-me-dot pv-me--sc"></span>
+                  </div>
+                </div>
+                <div class="pv-mkt-tile">
+                  <div class="pv-mkt-header">
+                    <i class="fa-solid fa-satellite pv-mkt-ico" aria-hidden="true"></i>
+                    <span class="pv-mkt-label">Defense Systems</span>
+                  </div>
+                  <span class="pv-mkt-apps">guidance, radar, specialty optics</span>
+                  <div class="pv-mkt-elems">
+                    <span class="pv-me-dot pv-me--nd"></span>
+                    <span class="pv-me-dot pv-me--dy"></span>
+                    <span class="pv-me-dot pv-me--y"></span>
+                  </div>
+                </div>
+              </div>
+
+              <p class="pv-prod-cap">High-purity REE compounds, delivered into allied supply chains.</p>
             </div>
           </div>
 
         </div>
+
+        <!-- DOTS: far-right step indicator -->
+        <div class="platform-dots" aria-hidden="true">
+          <span class="platform-dot"></span>
+          <span class="platform-dot"></span>
+          <span class="platform-dot"></span>
+          <span class="platform-dot"></span>
+        </div>
+
       </div>
     </div>
 
@@ -220,39 +417,50 @@
     <div class="container">
       <div class="team-header reveal">
         <span class="section-label">The Team</span>
-        <h2 class="section-title">Built by experts across science, industry, and defense</h2>
+        <h2 class="section-title">Built by experts across science, industry, defense, and space</h2>
       </div>
+
+      <p class="team-sublabel reveal">Founding Team</p>
 
       <div class="team-grid">
 
         <div class="team-card reveal">
-          <div class="team-avatar">BH</div>
+          <div class="team-photo-wrap">
+            <img class="team-photo" src="assets/img/team/bharandi-ceo.png" alt="Bijan Harandi" loading="lazy">
+          </div>
           <p class="team-name">Bijan Harandi</p>
-          <p class="team-title">CEO</p>
-          <p class="team-bio">Leads company strategy and investor relations with a background in venture-backed deep tech ventures.</p>
-          <a class="team-linkedin" href="#" aria-label="Bijan Harandi LinkedIn">
+          <p class="team-title">Chief Executive Officer</p>
+          <p class="team-credential">Systems Biology · Case Western Reserve</p>
+          <p class="team-bio">Startup founder and microbiologist with research experience spanning NASA Ames and Harvard Medical School. Leads strategy, fundraising, and company development.</p>
+          <a class="team-linkedin" href="https://www.linkedin.com/in/bijan-harandi/" target="_blank" rel="noopener noreferrer" aria-label="Bijan Harandi LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
             LinkedIn
           </a>
         </div>
 
         <div class="team-card reveal reveal-delay-1">
-          <div class="team-avatar">JP</div>
-          <p class="team-name">Jaume</p>
-          <p class="team-title">CTO</p>
-          <p class="team-bio">Background in radiation biology and biotech. Architects the technical platform and leads product development.</p>
-          <a class="team-linkedin" href="#" aria-label="CTO LinkedIn">
+          <div class="team-photo-wrap">
+            <img class="team-photo" src="assets/img/team/mcory-cso.png" alt="Dr. Michael Cory" loading="lazy">
+          </div>
+          <p class="team-name">Michael Cory, PhD</p>
+          <p class="team-title">Chief Scientific Officer</p>
+          <p class="team-credential">Synthetic Biology · Harvard Medical School</p>
+          <p class="team-bio">Synthetic biologist specializing in the biological separation of rare earth elements. Leads all scientific research and platform R&D at Barding.</p>
+          <a class="team-linkedin" href="https://www.linkedin.com/in/michaelcorybiochem/" target="_blank" rel="noopener noreferrer" aria-label="Michael Cory LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
             LinkedIn
           </a>
         </div>
 
         <div class="team-card reveal reveal-delay-2">
-          <div class="team-avatar">MC</div>
-          <p class="team-name">Dr. Michael Cory</p>
-          <p class="team-title">CSO</p>
-          <p class="team-bio">Harvard-trained scientist leading the biological R&D behind the Cliban Platform's core extraction process.</p>
-          <a class="team-linkedin" href="#" aria-label="Dr. Michael Cory LinkedIn">
+          <div class="team-photo-wrap">
+            <img class="team-photo" src="assets/img/team/jpuig-cto.png" alt="Jaume Puig" loading="lazy">
+          </div>
+          <p class="team-name">Jaume Puig</p>
+          <p class="team-title">Chief Technology Officer</p>
+          <p class="team-credential">Space Radiobiology · Laurentian / SNOLAB</p>
+          <p class="team-bio">Biomedical engineer with hands-on experience designing and operating biological hardware for extreme environments, including microgravity. Architects the Cliban platform and leads all technical development.</p>
+          <a class="team-linkedin" href="https://www.linkedin.com/in/jaume-puig/" target="_blank" rel="noopener noreferrer" aria-label="Jaume Puig LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
             LinkedIn
           </a>
@@ -262,36 +470,49 @@
 
       <!-- Advisory Board -->
       <div class="reveal">
-        <p class="advisory-label">Advisory Board</p>
+        <p class="team-sublabel team-sublabel--board">Advisory Board</p>
         <div class="advisory-grid">
-          <div class="advisory-card">
-            <div class="advisory-avatar">AD</div>
+
+          <div class="advisory-card reveal">
+            <div class="advisory-avatar">
+              <img src="assets/img/advisors/evahidi-adv.png" alt="Dr. Ehsan Vahidi" loading="lazy">
+            </div>
             <div class="advisory-info">
-              <p class="advisory-name">Advisor Name</p>
-              <p class="advisory-role">Expertise · Institution</p>
+              <p class="advisory-name">Dr. Ehsan Vahidi</p>
+              <p class="advisory-role">Extractive Metallurgy · University of Nevada</p>
             </div>
           </div>
-          <div class="advisory-card">
-            <div class="advisory-avatar">AD</div>
+
+          <div class="advisory-card reveal reveal-delay-1">
+            <div class="advisory-avatar">
+              <img src="assets/img/advisors/ngoldner-adv.png" alt="Dr. Nicholas Goldner" loading="lazy">
+            </div>
             <div class="advisory-info">
-              <p class="advisory-name">Advisor Name</p>
-              <p class="advisory-role">Expertise · Institution</p>
+              <p class="advisory-name">Dr. Nicholas Goldner</p>
+              <p class="advisory-role">Venture Partner · Alix Ventures</p>
             </div>
           </div>
-          <div class="advisory-card">
-            <div class="advisory-avatar">AD</div>
+
+          <div class="advisory-card reveal reveal-delay-2">
+            <div class="advisory-avatar">
+              <img src="assets/img/advisors/cmason_adv.png" alt="Dr. Christopher Mason" loading="lazy">
+            </div>
             <div class="advisory-info">
-              <p class="advisory-name">Advisor Name</p>
-              <p class="advisory-role">Expertise · Institution</p>
+              <p class="advisory-name">Dr. Christopher Mason</p>
+              <p class="advisory-role">Genomics · Cornell University</p>
             </div>
           </div>
-          <div class="advisory-card">
-            <div class="advisory-avatar">AD</div>
+
+          <div class="advisory-card reveal reveal-delay-3">
+            <div class="advisory-avatar">
+              <img src="assets/img/advisors/lzea_adv.png" alt="Dr. Luis Zea" loading="lazy">
+            </div>
             <div class="advisory-info">
-              <p class="advisory-name">Advisor Name</p>
-              <p class="advisory-role">Expertise · Institution</p>
+              <p class="advisory-name">Dr. Luis Zea</p>
+              <p class="advisory-role">Chief Scientist · Starlab Space</p>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -306,47 +527,26 @@
     <div class="container">
       <div class="news-header">
         <div class="reveal">
-          <span class="section-label">News &amp; Validation</span>
-          <h2 class="section-title" style="margin-bottom:0">Recognition &amp; Milestones</h2>
+          <span class="section-label">Recognition</span>
+          <h2 class="section-title" style="margin-bottom:0">Traction</h2>
         </div>
       </div>
 
-      <div class="news-grid" id="news-grid">
+      <div class="news-grid">
 
         <article class="news-card reveal">
-          <span class="news-tag">Competition</span>
-          <p class="news-title">Barding Industries places at Tufts University entrepreneurship competition</p>
-          <p class="news-meta">2024</p>
+          <span class="news-tag">Portfolio</span>
+          <p class="news-title">Welcomed into the HopStone Capital portfolio, receiving non-dilutive pre-seed funding</p>
+          <p class="news-meta">2025 · HopStone Capital, Johns Hopkins</p>
         </article>
 
         <article class="news-card reveal reveal-delay-1">
-          <span class="news-tag">Milestone</span>
-          <p class="news-title">Cliban Platform achieves proof-of-concept for REE bioleaching at bench scale</p>
-          <p class="news-meta">2024</p>
-        </article>
-
-        <article class="news-card reveal reveal-delay-2">
-          <span class="news-tag">Milestone</span>
-          <p class="news-title">Proof-of-concept demonstrated for grade-agnostic REE bioleaching from mine tailings</p>
-          <p class="news-meta">2024</p>
-        </article>
-
-        <!-- Hidden cards (shown on Load More) -->
-        <article class="news-card news-hidden">
-          <span class="news-tag">Industry</span>
-          <p class="news-title">Critical minerals named top national security priority in DoD supply chain report</p>
-          <p class="news-meta">2024</p>
-        </article>
-
-        <article class="news-card news-hidden">
-          <span class="news-tag">Recognition</span>
-          <p class="news-title">Featured in emerging deep tech ventures shaping the future of critical minerals</p>
-          <p class="news-meta">2024</p>
+          <span class="news-tag">Competition</span>
+          <p class="news-title">Placed 3rd at the Tufts $100k New Ventures Competition Finals</p>
+          <p class="news-meta">2026 · Derby Entrepreneurship Center, Tufts</p>
         </article>
 
       </div>
-
-      <button class="btn-load-more" id="btn-load-more" aria-label="Load more news">Load More</button>
     </div>
   </section>
 
@@ -355,11 +555,15 @@
        CTA
   ══════════════════════════════ -->
   <section id="cta">
+    <!-- Grid callback layers (static, no cursor interaction) -->
+    <div class="cta-grid-base" aria-hidden="true"></div>
+    <div class="cta-grid-glow" aria-hidden="true"></div>
+
     <div class="container">
-      <div class="reveal">
-        <h2 class="cta-title">Securing the minerals that power the future</h2>
-        <p class="cta-sub">Interested in partnering, investing, or learning more?</p>
-        <a class="btn-cta" href="#footer-contact">Contact Us</a>
+      <div class="cta-content reveal">
+        <h2 class="cta-title">The minerals are here.<br>So is the solution.</h2>
+        <p class="cta-sub">We are actively building partnerships across defense, mining, and manufacturing. If the mission resonates, let's talk.</p>
+        <a class="btn-cta" href="#footer-contact">Get in Touch</a>
       </div>
     </div>
   </section>
@@ -375,7 +579,7 @@
         <!-- Col 1: Brand -->
         <div>
           <img class="footer-logo" src="assets/img/logo.png" alt="Barding Industries" />
-          <p class="footer-tagline">Unlocking untapped critical minerals to secure vital supply chains, anywhere.</p>
+          <p class="footer-tagline">Unlocking untapped critical minerals to secure vital supply chains, <span class="hero-anywhere">anywhere.</span></p>
         </div>
 
         <!-- Col 2: Nav -->
@@ -392,19 +596,41 @@
         <!-- Col 3: Contact Form -->
         <div>
           <p class="footer-form-title">Get in Touch</p>
-          <!-- Replace YOUR_FORM_ID with your Formspree form ID -->
-          <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <form id="contact-form" action="https://formspree.io/f/xvzjloao" method="POST" novalidate>
             <div class="form-row">
-              <input class="form-field" type="text" name="name" placeholder="Name" required />
-              <input class="form-field" type="email" name="email" placeholder="Email" required />
+              <div class="form-field-wrap">
+                <input class="form-field" type="text" name="name" placeholder="Name" required />
+              </div>
+              <div class="form-field-wrap">
+                <input class="form-field" type="email" name="email" placeholder="Email" required />
+              </div>
             </div>
-            <input class="form-field" type="text" name="subject" placeholder="Subject" />
-            <textarea class="form-field" name="message" placeholder="Your message" rows="3"></textarea>
+            <div class="form-row">
+              <div class="form-field-wrap">
+                <input class="form-field" type="text" name="organization" placeholder="Organization" required />
+              </div>
+              <div class="form-field-wrap">
+                <div class="custom-select" id="role-select">
+                  <button class="custom-select-trigger form-field" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="custom-select-value">Reaching out as...</span>
+                    <svg class="custom-select-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                  <ul class="custom-select-dropdown" role="listbox" aria-label="Role">
+                    <li class="custom-select-option" data-value="Potential partner" role="option">Potential partner</li>
+                    <li class="custom-select-option" data-value="Investor" role="option">Investor</li>
+                    <li class="custom-select-option" data-value="Government / Defense" role="option">Government / Defense</li>
+                    <li class="custom-select-option" data-value="Press / Media" role="option">Press / Media</li>
+                    <li class="custom-select-option" data-value="Other" role="option">Other</li>
+                  </ul>
+                  <input type="hidden" name="role" value="">
+                </div>
+              </div>
+            </div>
+            <div class="form-field-wrap">
+              <textarea class="form-field" name="message" placeholder="Your message" rows="3" required></textarea>
+            </div>
             <button class="btn-form-submit" type="submit">Send Message</button>
           </form>
-          <div class="form-success" id="form-success" role="alert">
-            Message sent. We'll be in touch shortly.
-          </div>
         </div>
 
       </div>
