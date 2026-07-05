@@ -473,8 +473,17 @@
     {x:20,y:105,r:5},{x:108,y:112,r:7},{x:188,y:100,r:6},{x:280,y:108,r:8},{x:368,y:102,r:6},
     {x:65,y:130,r:6},{x:152,y:125,r:7},{x:240,y:135,r:6},{x:322,y:130,r:5},{x:408,y:133,r:6}
   ];
+  /* opacity scales with radius: larger = nearer = more opaque */
+  function depthOpacity(rad, base, step) {
+    return (base + (rad - 5) * step).toFixed(2);
+  }
+
   var gG = document.createElementNS(NS, 'g');
-  grey.forEach(function (a) { gG.appendChild(mkPath('pv-amb-hex', hexD(a.x, a.y, a.r))); });
+  grey.forEach(function (a) {
+    var p = mkPath('pv-amb-hex', hexD(a.x, a.y, a.r));
+    p.setAttribute('opacity', depthOpacity(a.r, 0.38, 0.09));
+    gG.appendChild(p);
+  });
   svg.appendChild(gG);
 
   /* Extra REE hexes — 15 items, same positions as V3 */
@@ -490,7 +499,9 @@
   ];
   var exG = document.createElementNS(NS, 'g');
   extras.forEach(function (d) {
-    exG.appendChild(mkPath('pv-float-hex pv-fhx--' + d.cls, hexD(d.x, d.y, d.r)));
+    var p = mkPath('pv-float-hex pv-fhx--' + d.cls, hexD(d.x, d.y, d.r));
+    p.setAttribute('opacity', depthOpacity(d.r, 0.42, 0.08));
+    exG.appendChild(p);
   });
   svg.appendChild(exG);
 
@@ -603,7 +614,9 @@
   /* Extra REE hexes */
   var exG = el('g');
   extras.forEach(function (d) {
-    exG.appendChild(mkPath('pv-float-hex pv-fhx--'+d.cls, hexD(d.x, d.y, d.r)));
+    var p = mkPath('pv-float-hex pv-fhx--'+d.cls, hexD(d.x, d.y, d.r));
+    p.setAttribute('opacity', (0.42 + (d.r - 5) * 0.08).toFixed(2));
+    exG.appendChild(p);
   });
   svg.appendChild(exG);
 

@@ -1060,29 +1060,28 @@ ul { list-style: none; }
 }
 
 /* Floating dissolved-ion hexes — shared by Extraction and Separation */
-.pv-float-hex {
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-}
-.pv-fh--nd { fill: rgba(82,128,180,0.32);  stroke: rgba(82,128,180,0.75); }
-.pv-fh--tb { fill: rgba(130,90,158,0.32);  stroke: rgba(130,90,158,0.75); }
-.pv-fh--dy { fill: rgba(52,140,90,0.32);   stroke: rgba(52,140,90,0.75); }
-.pv-fh--sc { fill: rgba(190,110,42,0.32);  stroke: rgba(190,110,42,0.75); }
-.pv-fh--y  { fill: rgba(184,22,32,0.32);   stroke: rgba(184,22,32,0.75); }
+.pv-float-hex { stroke: none; }
+
+/* Primary floating REE hexes — solid flat element colour */
+.pv-fh--nd { fill: #5280b4; }
+.pv-fh--tb { fill: #825a9e; }
+.pv-fh--dy { fill: #348c5a; }
+.pv-fh--sc { fill: #be6e2a; }
+.pv-fh--y  { fill: #b81620; }
 
 /* Grey rock particulate in solution — static, no animation */
 .pv-amb-hex {
-  fill:         rgba(200,190,196,0.10);
-  stroke:       rgba(220,210,216,0.22);
-  stroke-width: 0.75;
+  fill:   #2a2527;
+  stroke: none;
 }
 
 /* Extra REE hexes — smaller & more transparent than primary 5; same in both Extraction and Separation */
-.pv-fhx--nd { fill: rgba(82,128,180,0.15);  stroke: rgba(82,128,180,0.42);  stroke-width: 1; stroke-linejoin: round; }
-.pv-fhx--tb { fill: rgba(130,90,158,0.15);  stroke: rgba(130,90,158,0.42);  stroke-width: 1; stroke-linejoin: round; }
-.pv-fhx--dy { fill: rgba(52,140,90,0.15);   stroke: rgba(52,140,90,0.42);   stroke-width: 1; stroke-linejoin: round; }
-.pv-fhx--sc { fill: rgba(190,110,42,0.15);  stroke: rgba(190,110,42,0.42);  stroke-width: 1; stroke-linejoin: round; }
-.pv-fhx--y  { fill: rgba(184,22,32,0.15);   stroke: rgba(184,22,32,0.42);   stroke-width: 1; stroke-linejoin: round; }
+/* Extra REE hexes — same hue, darker/more muted than primaries */
+.pv-fhx--nd { fill: #3d5e8a; }
+.pv-fhx--tb { fill: #5c4278; }
+.pv-fhx--dy { fill: #285e40; }
+.pv-fhx--sc { fill: #7a4420; }
+.pv-fhx--y  { fill: #780d12; }
 
 /* Separation tile text */
 .pv-st-num {
@@ -1634,6 +1633,9 @@ ul { list-style: none; }
 
 .news-header {
   margin-bottom: 2.5rem;
+}
+.news-section-title {
+  margin-bottom: 0;
 }
 
 .news-grid {
