@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1b1718" />
 
   <!-- Primary meta -->
   <title>Barding Industries | Critical Mineral Biomining</title>
@@ -29,10 +30,37 @@
   <link rel="icon"             type="image/png" sizes="16x16" href="assets/img/logo_sq.png" />
   <link rel="apple-touch-icon" sizes="180x180"               href="assets/img/logo_sq.png" />
 
+  <!-- Fonts — preconnect first, then stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;700;800&display=swap" />
+
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Barding Industries",
+    "url": "https://www.bardingindustries.com",
+    "logo": "https://www.bardingindustries.com/assets/img/logo.png",
+    "description": "Critical mineral biomining company. The Cliban Platform extracts and separates rare earth elements from feedstocks conventional refiners cannot process.",
+    "foundingDate": "2023",
+    "industry": "Critical Minerals, Biotechnology",
+    "knowsAbout": ["rare earth elements", "biomining", "bioleaching", "critical minerals", "synthetic biology"],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "general",
+      "email": "contact@bardingindustries.com"
+    }
+  }
+  </script>
 </head>
 <body>
+
+  <a class="skip-link" href="#main-content">Skip to content</a>
 
   <!-- ══════════════════════════════
        NAVBAR
@@ -46,7 +74,7 @@
       <ul class="nav-links" id="nav-links" role="list">
         <li><a href="#platform">Platform</a></li>
         <li><a href="#team">Team</a></li>
-        <li><a href="#news">News</a></li>
+        <li><a href="#news">Milestones</a></li>
         <li><a href="#footer-contact" class="btn-nav">Contact</a></li>
       </ul>
 
@@ -58,6 +86,8 @@
     </div>
   </nav>
 
+
+  <main id="main-content">
 
   <!-- ══════════════════════════════
        HERO
@@ -167,7 +197,7 @@
     <!-- Section header — normal scroll -->
     <div class="container platform-intro reveal">
       <span class="section-label">The Cliban Platform</span>
-      <h2 class="section-title">A biological solution<br/>to a geopolitical problem</h2>
+      <h2 class="section-title">A biological solution to a geopolitical problem</h2>
       <p class="section-body">
         The rare earth problem is not scarcity. It is the inability to process what already exists. Cliban changes that.
       </p>
@@ -569,6 +599,8 @@
   </section>
 
 
+  </main><!-- /#main-content -->
+
   <!-- ══════════════════════════════
        FOOTER
   ══════════════════════════════ -->
@@ -589,7 +621,7 @@
             <a href="#rees">Why REEs</a>
             <a href="#platform">Platform</a>
             <a href="#team">Team</a>
-            <a href="#news">News</a>
+            <a href="#news">Milestones</a>
             <a href="#footer-contact">Contact</a>
           </nav>
         </div>
@@ -600,15 +632,15 @@
           <form id="contact-form" action="https://formspree.io/f/xvzjloao" method="POST" novalidate>
             <div class="form-row">
               <div class="form-field-wrap">
-                <input class="form-field" type="text" name="name" placeholder="Name" required />
+                <input class="form-field" type="text" name="name" placeholder="Name" aria-label="Name" autocomplete="name" required />
               </div>
               <div class="form-field-wrap">
-                <input class="form-field" type="email" name="email" placeholder="Email" required />
+                <input class="form-field" type="email" name="email" placeholder="Email" aria-label="Email" autocomplete="email" required />
               </div>
             </div>
             <div class="form-row">
               <div class="form-field-wrap">
-                <input class="form-field" type="text" name="organization" placeholder="Organization" required />
+                <input class="form-field" type="text" name="organization" placeholder="Organization" aria-label="Organization" autocomplete="organization" required />
               </div>
               <div class="form-field-wrap">
                 <div class="custom-select" id="role-select">
@@ -628,7 +660,7 @@
               </div>
             </div>
             <div class="form-field-wrap">
-              <textarea class="form-field" name="message" placeholder="Your message" rows="3" required></textarea>
+              <textarea class="form-field" name="message" placeholder="Your message" aria-label="Your message" rows="3" required></textarea>
             </div>
             <button class="btn-form-submit" type="submit">Send Message</button>
           </form>

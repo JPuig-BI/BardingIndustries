@@ -2,7 +2,7 @@
    BARDING INDUSTRIES — Main Stylesheet
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;700;800&display=swap');
+/* Fonts loaded via <link> tags in index.html for faster first paint */
 
 /* ── Design Tokens ── */
 :root {
@@ -25,6 +25,27 @@
 
   --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --transition: 0.3s var(--ease);
+}
+
+/* ── Skip to content ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--clr-red);
+  color: var(--clr-white);
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  z-index: 9999;
+  border-radius: 0 0 4px 4px;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+  outline: none;
 }
 
 /* ── Reset & Base ── */
@@ -2143,10 +2164,54 @@ html {
   .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
 }
 
+/* ════════════════════════════════════════
+   2026 POLISH
+   ════════════════════════════════════════ */
+
+/* Balanced line-breaks prevent orphaned words on key headings */
+.hero-title,
+.section-title,
+.cta-title,
+.news-title,
+.team-name {
+  text-wrap: balance;
+}
+
+/* Consistent digit widths for the large stat numbers */
+.rees-stat-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Keyboard focus ring — visible only on keyboard nav, not mouse clicks */
+:focus-visible {
+  outline: 2px solid var(--clr-red);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Respect the user's motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (max-width: 768px) {
   :root { --section-pad: 72px 0; }
 
   .hero-scroll { display: none; }
+  .platform-scroll-hint { display: none; }
   .nav-links { display: none; }
   .nav-links.open {
     display: flex;

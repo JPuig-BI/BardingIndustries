@@ -95,13 +95,26 @@
 
   function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   function animateNum(el) {
     var to       = parseInt(el.getAttribute('data-to'), 10);
     if (!to) return;
     var prefix   = el.getAttribute('data-prefix') || '';
     var suffix   = el.getAttribute('data-suffix') || '';
     var child    = el.querySelector('.rees-stat-of');
-    var duration = 1400;
+
+    function setFinal() {
+      if (child) {
+        el.childNodes[0].textContent = to + ' ';
+      } else {
+        el.textContent = prefix + to + suffix;
+      }
+    }
+
+    if (reducedMotion) { setFinal(); return; }
+
+    var duration  = 1400;
     var startTime = null;
 
     function tick(ts) {
@@ -354,7 +367,10 @@
     navLinks.forEach(function (link) {
       if (link.classList.contains('btn-nav')) return;
       const href = link.getAttribute('href').replace('#', '');
-      link.classList.toggle('active-link', href === active);
+      const isActive = href === active;
+      link.classList.toggle('active-link', isActive);
+      if (isActive) link.setAttribute('aria-current', 'true');
+      else          link.removeAttribute('aria-current');
     });
   }
 
