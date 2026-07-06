@@ -1490,9 +1490,8 @@ ul { list-style: none; }
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  transition: transform var(--transition), opacity var(--transition);
+  transition: opacity var(--transition);
 }
-.team-card:hover { transform: translateY(-5px); }
 
 
 /* Portrait photo */
@@ -1508,7 +1507,7 @@ ul { list-style: none; }
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
+  height: 1px;
   background: var(--clr-red);
   transform: scaleX(0);
   transform-origin: left;
