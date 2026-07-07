@@ -150,28 +150,6 @@
 })();
 
 
-/* ── News: Load More ── */
-(function () {
-  const btn    = document.getElementById('btn-load-more');
-  const hidden = document.querySelectorAll('.news-hidden');
-  if (!btn || !hidden.length) return;
-
-  btn.addEventListener('click', function () {
-    hidden.forEach(function (card) {
-      card.classList.remove('news-hidden');
-      // Trigger reveal animation
-      card.classList.add('reveal');
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          card.classList.add('visible');
-        });
-      });
-    });
-    btn.style.display = 'none';
-  });
-})();
-
-
 /* ── Contact form: validation + AJAX + sent confirmation ── */
 (function () {
   const form      = document.getElementById('contact-form');
@@ -232,7 +210,7 @@
     var role = form.querySelector('[name="role"]');
     if (role && !role.value) {
       var roleTrigger = form.querySelector('.custom-select-trigger');
-      if (roleTrigger) setError(roleTrigger, 'Please select your role.');
+      if (roleTrigger) setError(roleTrigger, 'Please select an inquiry type.');
       ok = false;
     }
     if (!message.value.trim()) {
@@ -259,7 +237,7 @@
   }
 
   function restoreBtn() {
-    submitBtn.textContent = 'Send Message';
+    submitBtn.textContent = 'Submit';
     submitBtn.classList.remove('btn-sent');
     submitBtn.disabled = false;
   }
@@ -288,6 +266,10 @@
 
       if (res.ok) {
         form.reset();
+        // Reset custom select visual state (form.reset() only clears the hidden input)
+        const selVal = form.querySelector('.custom-select-value');
+        if (selVal) { selVal.textContent = 'Inquiry type'; selVal.classList.remove('selected'); }
+        form.querySelectorAll('.custom-select-option').forEach(function (o) { o.removeAttribute('aria-selected'); });
         showSent("Message sent – we'll be in touch.");
         setTimeout(restoreBtn, 5000);
       } else {
@@ -347,7 +329,7 @@
 
 /* ── Active nav link highlighting on scroll ── */
 (function () {
-  const sections = ['rees', 'platform', 'team', 'news'];
+  const sections = ['rees', 'platform', 'space', 'team', 'news'];
   const navLinks = document.querySelectorAll('.nav-links a');
   const navH     = 80;
 
@@ -521,13 +503,13 @@
   });
   svg.appendChild(exG);
 
-  /* Primary 5 REE hexes — slightly varied radii for depth */
+  /* Primary 5 REE hexes — ordered by atomic number (Sc→Y→Nd→Tb→Dy), left to right */
   var floats = [
-    {cls:'nd', cx:60,  cy:88,  r:14},
-    {cls:'tb', cx:148, cy:68,  r:12},
-    {cls:'dy', cx:228, cy:92,  r:15},
-    {cls:'sc', cx:315, cy:72,  r:13},
-    {cls:'y',  cx:385, cy:85,  r:11}
+    {cls:'sc', cx:60,  cy:88,  r:13},
+    {cls:'y',  cx:148, cy:68,  r:11},
+    {cls:'nd', cx:228, cy:92,  r:14},
+    {cls:'tb', cx:315, cy:72,  r:12},
+    {cls:'dy', cx:385, cy:85,  r:15}
   ];
   var fG = document.createElementNS(NS, 'g');
   fG.setAttribute('class', 'pv-float-group');
@@ -551,34 +533,35 @@
    * to avoid overlap with extras at those positions.
    * Same slight radius variation as Extraction for visual consistency.
    */
+  /* tcx positions ordered by atomic number: Sc(21)→42, Y(39)→126, Nd(60)→210, Tb(65)→294, Dy(66)→378 */
   var elems = [
-    {id:'nd',color:'#5280b4',fcx:305,fcy:78, r:14,tcx:42, num:'60',sym:'Nd'},
-    {id:'tb',color:'#825a9e',fcx:385,fcy:60, r:12,tcx:126,num:'65',sym:'Tb'},
-    {id:'dy',color:'#348c5a',fcx:155,fcy:72, r:15,tcx:210,num:'66',sym:'Dy'},
-    {id:'sc',color:'#be6e2a',fcx:30, fcy:70, r:13,tcx:294,num:'21',sym:'Sc'},
-    {id:'y', color:'#b81620',fcx:222,fcy:72, r:11,tcx:378,num:'39',sym:'Y' }
+    {id:'nd',color:'#5280b4',fcx:305,fcy:78, r:14,tcx:210,num:'60',sym:'Nd'},
+    {id:'tb',color:'#825a9e',fcx:385,fcy:60, r:12,tcx:294,num:'65',sym:'Tb'},
+    {id:'dy',color:'#348c5a',fcx:155,fcy:72, r:15,tcx:378,num:'66',sym:'Dy'},
+    {id:'sc',color:'#be6e2a',fcx:30, fcy:70, r:13,tcx:42, num:'21',sym:'Sc'},
+    {id:'y', color:'#b81620',fcx:222,fcy:72, r:11,tcx:126,num:'39',sym:'Y' }
   ];
 
-  /* Same 15 extras as Extraction. tcx absent = no ghost arrow (Listerine escape). */
+  /* Same 15 extras as Extraction. tcx absent = no ghost arrow (escaped). tcx updated for atomic-number tile order. */
   var extras = [
     {cls:'nd',x:110,y:32, r:5},              /* escaped */
-    {cls:'sc',x:285,y:36, r:7,tcx:294},
-    {cls:'tb',x:170,y:38, r:6,tcx:126},
-    {cls:'y', x:372,y:35, r:6,tcx:378},
+    {cls:'sc',x:285,y:36, r:7,tcx:42 },
+    {cls:'tb',x:170,y:38, r:6,tcx:294},
+    {cls:'y', x:372,y:35, r:6,tcx:126},
     {cls:'y', x:52, y:52, r:7},              /* escaped */
-    {cls:'nd',x:100,y:62, r:8,tcx:42 },
-    {cls:'dy',x:340,y:45, r:8,tcx:210},
-    {cls:'nd',x:242,y:62, r:7,tcx:42 },
-    {cls:'tb',x:345,y:70, r:5,tcx:126},
-    {cls:'sc',x:140,y:95, r:5,tcx:294},
-    {cls:'dy',x:170,y:100,r:6,tcx:210},
-    {cls:'nd',x:400,y:108,r:5,tcx:42 },
-    {cls:'nd',x:82, y:125,r:5,tcx:42 },
-    {cls:'dy',x:205,y:135,r:6,tcx:210},
-    {cls:'sc',x:335,y:120,r:5,tcx:294}
+    {cls:'nd',x:100,y:62, r:8,tcx:210},
+    {cls:'dy',x:340,y:45, r:8,tcx:378},
+    {cls:'nd',x:242,y:62, r:7,tcx:210},
+    {cls:'tb',x:345,y:70, r:5,tcx:294},
+    {cls:'sc',x:140,y:95, r:5,tcx:42 },
+    {cls:'dy',x:170,y:100,r:6,tcx:378},
+    {cls:'nd',x:400,y:108,r:5,tcx:210},
+    {cls:'nd',x:82, y:125,r:5,tcx:210},
+    {cls:'dy',x:205,y:135,r:6,tcx:378},
+    {cls:'sc',x:335,y:120,r:5,tcx:42 }
   ];
 
-  var tileTop = 190, tileH = 52, tileW = 46;
+  var tileTop = 186, tileH = 62, tileW = 56;
 
   function hexD(cx, cy, rad) {
     var pts = [];
@@ -667,14 +650,14 @@
 
     var tNum = el('text');
     tNum.setAttribute('x',    e.tcx);
-    tNum.setAttribute('y',    tileTop + 16);
+    tNum.setAttribute('y',    tileTop + 17);
     tNum.setAttribute('class','pv-st-num');
     tNum.textContent = e.num;
     svg.appendChild(tNum);
 
     var tSym = el('text');
     tSym.setAttribute('x',    e.tcx);
-    tSym.setAttribute('y',    tileTop + 38);
+    tSym.setAttribute('y',    tileTop + 48);
     tSym.setAttribute('class','pv-st-sym pv-st--'+e.id);
     tSym.textContent = e.sym;
     svg.appendChild(tSym);
@@ -713,7 +696,10 @@
       opt.addEventListener('click', function () {
         var val  = opt.getAttribute('data-value');
         var text = opt.textContent.trim();
-        if (valueEl) valueEl.textContent = text;
+        if (valueEl) {
+          valueEl.textContent = text;
+          valueEl.classList.add('selected');
+        }
         if (hidden)  hidden.value = val;
         options.forEach(function (o) { o.removeAttribute('aria-selected'); });
         opt.setAttribute('aria-selected', 'true');
@@ -721,10 +707,36 @@
       });
     });
 
+  
     document.addEventListener('click', function () { close(); });
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') close();
     });
+  });
+})();
+
+
+/* ── Cookie consent ── */
+(function () {
+  const bar    = document.getElementById('cookie-bar');
+  const accept = document.getElementById('cookie-accept');
+  const deny   = document.getElementById('cookie-deny');
+  if (!bar || !accept || !deny) return;
+
+  if (localStorage.getItem('cookie-consent')) return;
+
+  setTimeout(function () { bar.classList.add('visible'); }, 1200);
+
+  function dismiss() { bar.classList.remove('visible'); }
+
+  accept.addEventListener('click', function () {
+    localStorage.setItem('cookie-consent', 'accepted');
+    dismiss();
+  });
+
+  deny.addEventListener('click', function () {
+    localStorage.setItem('cookie-consent', 'denied');
+    dismiss();
   });
 })();

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#1b1718" />
   <meta name="robots" content="noindex" />
-  <title>Page Not Found | Barding Industries</title>
+  <title>Barding Industries | Page Not Found</title>
 
   <link rel="icon"             type="image/png" sizes="32x32" href="assets/img/logo_sq.png" />
   <link rel="apple-touch-icon" sizes="180x180"               href="assets/img/logo_sq.png" />
@@ -19,7 +19,7 @@
       --clr-bg:      #1b1718;
       --clr-red:     #b81620;
       --clr-white:   #ffffff;
-      --clr-muted:   rgba(255,255,255,0.58);
+      --clr-muted:   rgba(255,255,255,0.68);
       --clr-faint:   rgba(255,255,255,0.18);
       --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
@@ -28,7 +28,7 @@
     html { font-size: 16px; }
 
     body {
-      background: var(--clr-bg);
+      background: #000000;
       color: var(--clr-white);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
@@ -40,17 +40,6 @@
       overflow: hidden;
       position: relative;
       isolation: isolate;
-    }
-
-    /* Subtle radial glow — same as hero */
-    .bg-glow {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 60% 40%, rgba(105,23,81,0.18) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(184,22,32,0.08) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
     }
 
     /* Base white chevron grid */
@@ -116,16 +105,6 @@
       filter: drop-shadow(0 0 3px rgba(255,255,255,0.08));
     }
 
-    .eyebrow {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.6875rem;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--clr-muted);
-      margin-bottom: 2.5rem;
-    }
-
     .label {
       font-family: 'Inter', sans-serif;
       font-size: 0.75rem;
@@ -159,9 +138,9 @@
     }
 
     .message {
-      font-size: 1.0625rem;
+      font-size: 1rem;
       color: var(--clr-muted);
-      line-height: 1.75;
+      line-height: 1.7;
       margin-bottom: 2.5rem;
       text-wrap: balance;
     }
@@ -178,10 +157,13 @@
       padding: 0.875rem 2rem;
       text-decoration: none;
       border: 1px solid var(--clr-red);
-      transition: background 0.3s var(--ease);
+      transition: background 0.3s var(--ease), border-color 0.3s var(--ease);
     }
 
-    .btn-home:hover { background: #9e1019; }
+    .btn-home:hover {
+      background: #9e1019;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
 
     .btn-home:focus-visible {
       outline: 2px solid var(--clr-red);
@@ -191,7 +173,6 @@
 </head>
 <body>
 
-  <div class="bg-glow"     aria-hidden="true"></div>
   <div class="grid-base"   aria-hidden="true"></div>
   <div class="grid-purple" id="grid-purple" aria-hidden="true"></div>
   <div class="grid-cursor" id="grid-cursor" aria-hidden="true"></div>
@@ -201,11 +182,10 @@
       <img class="logo" src="assets/img/logo.png" alt="Barding Industries" />
     </a>
 
-    <p class="eyebrow">Barding Industries · Critical Minerals</p>
     <p class="code">404</p>
     <p class="label">Element Not Found</p>
-    <p class="message">Not every exploration turns up what you're looking for. The critical minerals work, and everything else, is back at the surface.</p>
-    <a class="btn-home" href="/">Back to the Surface</a>
+    <p class="message">This page does not exist. The rest of the operation is still running.</p>
+    <a class="btn-home" href="/">Return Home</a>
   </div>
 
   <script>
