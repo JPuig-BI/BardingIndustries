@@ -1276,11 +1276,13 @@ ul { list-style: none; }
 
 /* ── Space Section ── */
 /*
-  Layout: Earth on LEFT bleeds off the left page edge (~2/3 visible),
-  text on RIGHT aligned to the shiny/lit atmosphere side.
-  Asymmetric mask: fade only on the LEFT where the sphere exits the page.
-  The right side (bright atmosphere glow) stays fully opaque.
-  Dark space background fades in/out via gradient to match adjacent sections.
+  Layout: Moon surface on LEFT bleeds off the left page edge,
+  text on RIGHT. Image is landscape (3:2), framed to show the
+  lunar horizon + earthrise moment in the upper portion.
+  Full-perimeter vignette mask: two intersected gradients fade
+  the Moon's grey surface into the black section background on
+  all four edges. Left gets the strongest fade (page bleed);
+  right/top/bottom get softer fades.
 */
 #space {
   /* Pure black — gradient transition is handled by #platform::after */
@@ -1312,17 +1314,21 @@ ul { list-style: none; }
 .space-earth-img {
   /* Width compensates for the left bleed */
   width: calc(100% + max(0px, (100vw - var(--max-w)) / 2));
-  max-width: 640px;
-  aspect-ratio: 1;
-  object-fit: cover;
-  object-position: center 38%;
+  max-width: 720px;
+  aspect-ratio: 3/2;
+  object-fit: contain;
   display: block;
-  /* Single left-to-right mask: transparent where the sphere bleeds off the left
-     page edge, fully opaque by ~46% so the right (shiny atmosphere) side is
-     completely unclipped. No top-bottom mask needed — the photo's own black
-     background matches the section background seamlessly. */
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.65) 26%, black 46%, black 100%);
-  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.65) 26%, black 46%, black 100%);
+  /* Full-perimeter vignette: two intersected gradients blend the Moon's
+     grey/textured surface into the black section background on all sides.
+     Left is strongest (page bleed); right, top, bottom are softer. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 20%, black 36%, black 68%, rgba(0,0,0,0.4) 84%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 12%, black 80%, transparent 100%);
+  mask-image:
+    linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 20%, black 36%, black 68%, rgba(0,0,0,0.4) 84%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 12%, black 80%, transparent 100%);
+  -webkit-mask-composite: destination-in;
+  mask-composite: intersect;
 }
 
 .space-block {
@@ -1341,14 +1347,15 @@ ul { list-style: none; }
   }
   .space-earth-img {
     width: 100%;
-    max-width: 300px;
+    max-width: 360px;
     margin: 0 auto;
-    /* On mobile restore a simple circular fade */
-    -webkit-mask-image: radial-gradient(circle closest-side at center,
-      black 80%, rgba(0,0,0,0.4) 91%, transparent 98%);
+    aspect-ratio: 3/2;
+    /* On mobile: elliptical vignette fades the Moon surface on all edges */
+    -webkit-mask-image: radial-gradient(ellipse 88% 82% at center 40%,
+      black 55%, rgba(0,0,0,0.5) 75%, transparent 100%);
     -webkit-mask-composite: source-over;
-    mask-image: radial-gradient(circle closest-side at center,
-      black 80%, rgba(0,0,0,0.4) 91%, transparent 98%);
+    mask-image: radial-gradient(ellipse 88% 82% at center 40%,
+      black 55%, rgba(0,0,0,0.5) 75%, transparent 100%);
     mask-composite: add;
   }
   .space-block { padding-right: 0; }
@@ -2109,7 +2116,6 @@ html {
   .hero-scroll { display: none; }
   .nav-links { display: none; }
   .nav-links.open {
-    display: flex;
     flex-direction: column;
     position: fixed;
     top: var(--nav-h);
