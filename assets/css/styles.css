@@ -224,6 +224,8 @@ ul { list-style: none; }
   gap: 5px;
   cursor: pointer;
   padding: 4px;
+  background: transparent;
+  border: none;
 }
 .nav-toggle span {
   display: block;
@@ -231,10 +233,13 @@ ul { list-style: none; }
   height: 2px;
   background: var(--clr-white);
   border-radius: 2px;
-  transition: transform var(--transition), opacity var(--transition), width var(--transition);
+  transition: transform var(--transition), opacity var(--transition), width var(--transition), background var(--transition);
 }
 
-/* Hamburger → X when open */
+/* Hamburger → X when open: bars turn red */
+#nav-toggle[aria-expanded="true"] span {
+  background: var(--clr-red);
+}
 #nav-toggle[aria-expanded="true"] span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
@@ -399,7 +404,7 @@ ul { list-style: none; }
   transition: background var(--transition), border-color var(--transition), color var(--transition);
 }
 .btn-hero-secondary:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--clr-surface);
   border-color: rgba(255, 255, 255, 0.35);
   color: var(--clr-white);
 }
@@ -592,6 +597,7 @@ ul { list-style: none; }
 .rees-waste-row:hover .rees-waste-num { transform: scale(1.08); }
 
 .rees-waste-num--dim  { color: var(--clr-muted); }
+.rees-waste-num--recycled { color: var(--clr-muted); }
 .rees-waste-num--lost {
   color: var(--clr-red);
   animation: rees-lost-pulse 3.5s ease-in-out infinite;
@@ -776,43 +782,41 @@ ul { list-style: none; }
 .platform-visual.active .pv-fs-claim { opacity: 1; }
 
 /* Grade legend */
-.pv-fs-grade-scale {
+.pv-fs-stats {
   display: grid;
-  grid-template-columns: 1fr 1.5fr 1.5fr;
-  gap: 0;
-  margin-bottom: 1.125rem;
-  border: 1px solid var(--clr-faint);
-  border-radius: 2px;
-  overflow: hidden;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--clr-faint);
+  border-bottom: 1px solid var(--clr-faint);
+  margin-bottom: 1.25rem;
   opacity: 0;
   transition: opacity 0.5s var(--ease) 0.1s;
 }
-.platform-visual.active .pv-fs-grade-scale { opacity: 1; }
-.pv-fs-gs-item {
-  padding: 0.5rem 0.75rem;
+.platform-visual.active .pv-fs-stats { opacity: 1; }
+.pv-fs-stat {
+  padding: 0.875rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 0.15rem;
+  border-right: 1px solid var(--clr-faint);
 }
-.pv-fs-gs--waste  { background: rgba(184,22,32,0.14); border-right: 1px solid var(--clr-faint); }
-.pv-fs-gs--low    { background: rgba(184,22,32,0.06); border-right: 1px solid var(--clr-faint); }
-.pv-fs-gs--high   { background: rgba(255,255,255,0.03); }
-.pv-fs-gs-name {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.pv-fs-stat:last-child { border-right: none; }
+.pv-fs-stat-num {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2vw, 1.875rem);
+  font-weight: 700;
+  line-height: 1;
   color: var(--clr-white);
 }
-.pv-fs-gs--waste .pv-fs-gs-name { color: var(--clr-red); }
-.pv-fs-gs-pct {
-  font-size: 1rem;
-  font-weight: 700;
+.pv-fs-stat:first-child .pv-fs-stat-num { color: var(--clr-red); }
+.pv-fs-stat-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--clr-muted);
-  font-family: var(--font-heading);
 }
-.pv-fs-gs-note {
-  font-size: 0.75rem;
+.pv-fs-stat-sub {
+  font-size: 0.6875rem;
   color: rgba(255,255,255,0.32);
   line-height: 1.3;
 }
@@ -1260,15 +1264,49 @@ ul { list-style: none; }
     position: relative;
     top: unset;
     height: auto;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 0;
     padding: 1.5rem 1.5rem 2rem;
   }
-  .platform-visuals-col { display: none; }
-  .platform-dots        { display: none; }
-  .platform-step { opacity: 1; }
+  /* Flatten columns so steps and visuals can interleave via order */
+  .platform-steps-col,
+  .platform-visuals-col { display: contents; }
+  /* Interleave: step → visual → step → visual */
+  .platform-step[data-step="0"]     { order: 1; }
+  .platform-visual[data-visual="0"] { order: 2; }
+  .platform-step[data-step="1"]     { order: 3; }
+  .platform-visual[data-visual="1"] { order: 4; }
+  .platform-step[data-step="2"]     { order: 5; }
+  .platform-visual[data-visual="2"] { order: 6; }
+  .platform-step[data-step="3"]     { order: 7; }
+  .platform-visual[data-visual="3"] { order: 8; }
+  /* All visuals: visible and in normal flow */
+  .platform-visual {
+    position: relative;
+    top: unset;
+    left: unset;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+  /* All animated children: skip transitions and show immediately */
+  .pv-fs-claim,
+  .pv-fs-stats,
+  .pv-fs-row,
+  .pv-fs-axis,
+  .pv-fs-note,
+  .pv-prod-el,
+  .pv-mkt-tile,
+  .pv-me-dot,
+  .pv-prod-cap { opacity: 1; transform: none; }
+  .pv-fs-fill { width: var(--pct); }
+  .platform-dots { display: none; }
+  .platform-step { opacity: 1; margin-bottom: 0.5rem; }
   .platform-step .step-desc {
-    max-height: 200px;
+    max-height: none;
     opacity: 1;
     margin-top: 0.5rem;
   }
@@ -1646,14 +1684,14 @@ ul { list-style: none; }
   z-index: 0;
 }
 
-/* Base chevron grid — identical to hero */
+/* Base chevron grid — above vignette so it stays visible */
 .cta-grid-base {
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='54'%3E%3Cpolyline points='0,27 27,0 54,27 81,0 108,27' fill='none' stroke='white' stroke-opacity='0.045' stroke-width='1'/%3E%3Cpolyline points='0,27 27,54 54,27 81,54 108,27' fill='none' stroke='white' stroke-opacity='0.045' stroke-width='1'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='54'%3E%3Cpolyline points='0,27 27,0 54,27 81,0 108,27' fill='none' stroke='white' stroke-opacity='0.07' stroke-width='1'/%3E%3Cpolyline points='0,27 27,54 54,27 81,54 108,27' fill='none' stroke='white' stroke-opacity='0.07' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 108px 54px;
   pointer-events: none;
-  z-index: -1;
+  z-index: 1;
 }
 
 /* Red glow layer — hidden for clean corporate look */
@@ -1663,7 +1701,7 @@ ul { list-style: none; }
 
 .cta-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   max-width: 680px;
   margin: 0 auto;
 }
@@ -2062,6 +2100,8 @@ html {
     border-bottom: 1px solid var(--clr-faint);
     padding: 2rem 0;
   }
+  /* Reset left-padding offset so all stacked stats align evenly */
+  .rees-stat:not(:first-child) { padding-left: 0; }
   .rees-stat:last-child { border-bottom: none; }
   .rees-body { grid-template-columns: 1fr; gap: 3rem; }
   .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -2116,6 +2156,7 @@ html {
   .hero-scroll { display: none; }
   .nav-links { display: none; }
   .nav-links.open {
+    display: flex;
     flex-direction: column;
     position: fixed;
     top: var(--nav-h);
@@ -2131,4 +2172,65 @@ html {
   .advisory-grid { grid-template-columns: 1fr 1fr; }
   .form-row { grid-template-columns: 1fr; }
   .news-grid { grid-template-columns: 1fr; }
+
+  /* Team: remove ops-sep divider — all members flow as one list */
+  .team-grid--ops-sep { border-top: none; padding-top: 0; }
+
+  /* Hero actions: stack buttons vertically */
+  .hero-actions { flex-direction: column; align-items: flex-start; gap: 0.875rem; }
+
+  /* CTA: tighten padding */
+  #cta { padding: 90px 0; }
+
+  /* ── Hero buttons: stretch to full-width stack on mobile ── */
+  .hero-actions { align-items: stretch; }
+  .btn-hero-primary,
+  .btn-hero-secondary { text-align: center; }
+
+  /* ── Nav dropdown: correct position when navbar is compact (scrolled state) ── */
+  #navbar.scrolled .nav-links.open { top: var(--nav-h-compact); }
+
+  /* ── Team cards: center-align on single-column mobile ── */
+  .team-card { align-items: center; text-align: center; }
+  .team-photo-wrap { margin-left: auto; margin-right: auto; }
+  .team-linkedin { align-self: center; }
+
+  /* ── CTA button: block + centered on mobile ── */
+  .btn-cta {
+    display: block;
+    text-align: center;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Platform steps: tighter rhythm in interleaved mobile layout ── */
+  .platform-step { padding: 1.125rem 0; }
+  .platform-visual { margin-bottom: 1.25rem; }
+
+  /* ── Feedstock stats: smaller numbers on narrow phones ── */
+  .pv-fs-stat-num { font-size: 1.125rem; }
+  .pv-fs-stat { padding: 0.75rem 0.75rem; }
+}
+
+/* ── Extra-small screens (≤ 480px) ── */
+@media (max-width: 480px) {
+  /* Slightly tighter container padding */
+  .container { padding: 0 1.25rem; }
+
+  /* Advisory board: single column — 2×2 is too cramped at ~160px per column */
+  .advisory-grid { grid-template-columns: 1fr; }
+  .advisory-card { padding: 1.125rem 1rem; gap: 1rem; }
+
+  /* News cards: tighter padding */
+  .news-card { padding: 1.75rem 1.25rem; }
+
+  /* Hero title: constrain to feel right at 320–480px */
+  .hero-title { font-size: clamp(2rem, 9vw, 2.4rem); }
+
+  /* Section body text: full-width on tiny screens */
+  .section-body { max-width: 100%; }
+
+  /* Footer: tighter gap */
+  .footer-grid { gap: 2rem; }
 }
