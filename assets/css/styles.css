@@ -2222,6 +2222,9 @@ html {
   .advisory-grid { grid-template-columns: 1fr; }
   .advisory-card { padding: 1.125rem 1rem; gap: 1rem; }
 
+  /* Product markets: single column on very small screens */
+  .pv-prod-markets { grid-template-columns: 1fr; }
+
   /* News cards: tighter padding */
   .news-card { padding: 1.75rem 1.25rem; }
 
