@@ -1423,7 +1423,6 @@ ul { list-style: none; }
 }
 .team-grid--ops-sep {
   padding-top: 2.5rem;
-  border-top: 1px solid var(--clr-faint);
 }
 
 /* Founder grid */
