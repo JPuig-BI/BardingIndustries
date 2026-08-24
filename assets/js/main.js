@@ -270,7 +270,7 @@
         const selVal = form.querySelector('.custom-select-value');
         if (selVal) { selVal.textContent = 'Inquiry type'; selVal.classList.remove('selected'); }
         form.querySelectorAll('.custom-select-option').forEach(function (o) { o.removeAttribute('aria-selected'); });
-        showSent("Message sent – we'll be in touch.");
+        showSent("Inquiry received. Our team will respond shortly.");
         setTimeout(restoreBtn, 5000);
       } else {
         showSent('Something went wrong. Please try again.');

@@ -726,9 +726,20 @@ ul { list-style: none; }
 }
 
 .platform-step.active .step-desc {
-  max-height: 160px;
+  max-height: 200px;
   opacity: 1;
   margin-top: 0.5rem;
+}
+
+.step-advantage {
+  display: block;
+  margin-top: 0.625rem;
+  font-size: 0.78rem;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  color: var(--clr-red);
+  letter-spacing: 0.01em;
+  line-height: 1.45;
 }
 
 /* RIGHT: visuals panel */
@@ -1428,7 +1439,7 @@ ul { list-style: none; }
 /* Founder grid */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
   margin-bottom: 2.5rem;
 }
@@ -2146,6 +2157,10 @@ html {
   }
 }
 
+@media (max-width: 1024px) {
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 768px) {
   :root { --section-pad: 72px 0; }
 
@@ -2200,13 +2215,32 @@ html {
     margin-right: auto;
   }
 
-  /* ── Platform steps: tighter rhythm in interleaved mobile layout ── */
-  .platform-step { padding: 1.125rem 0; }
+  /* ── Platform: disable sticky scroll on mobile, show all steps ── */
+  .platform-scroll-outer { height: auto !important; }
+  .platform-sticky-inner {
+    position: relative;
+    height: auto;
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-bottom: 2rem;
+  }
+  .platform-visuals-col { display: none; }
+  .platform-dots { display: none; }
+  .platform-step { opacity: 1 !important; padding: 1.125rem 0; }
   .platform-visual { margin-bottom: 1.25rem; }
+  .step-desc {
+    max-height: 320px !important;
+    opacity: 1 !important;
+    margin-top: 0.5rem !important;
+  }
 
   /* ── Feedstock stats: smaller numbers on narrow phones ── */
   .pv-fs-stat-num { font-size: 1.125rem; }
   .pv-fs-stat { padding: 0.75rem 0.75rem; }
+
+  /* ── Comparison cards: stack on mobile ── */
+  .compare-cards { grid-template-columns: 1fr; }
+  .compare-card--conv { display: none; }
 }
 
 /* ── Extra-small screens (≤ 480px) ── */
@@ -2232,4 +2266,192 @@ html {
 
   /* Footer: tighter gap */
   .footer-grid { gap: 2rem; }
+}
+
+
+/* ══════════════════════════════
+   SUPPORTERS / BACKED BY
+══════════════════════════════ */
+/* #supporters section removed — folded into #news */
+.supporters-label {
+  text-align: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+  font-weight: 500;
+  margin-bottom: 2.2rem;
+  font-family: var(--font-heading);
+}
+.supporters-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4.5rem;
+  flex-wrap: wrap;
+}
+.supporter-logo {
+  display: flex;
+  align-items: center;
+  transition: opacity 0.25s ease;
+  opacity: 0.72;
+}
+.supporter-logo:hover {
+  opacity: 1;
+}
+.supporter-logo img {
+  height: 40px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  transition: filter 0.3s ease, opacity 0.3s ease;
+  display: block;
+}
+/* Square logo (HopStone) — cap height lower so it doesn't dwarf landscape logos */
+.supporter-logo--mono img {
+  height: 52px;
+  max-width: 120px;
+}
+.supporter-logo:hover img {
+  filter: none;
+}
+/* Monochromatic logos (no brand color): stay white on hover, just full opacity */
+.supporter-logo--mono img {
+  filter: brightness(0) invert(1);
+}
+.supporter-logo--mono:hover img {
+  filter: brightness(0) invert(1);
+}
+/* Fallback text if images aren't loaded yet */
+.supporter-logo-fallback {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.72);
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+.supporter-logo:hover .supporter-logo-fallback {
+  color: #fff;
+}
+
+
+/* ══════════════════════════════
+   HERO TRUST STRIP
+══════════════════════════════ */
+.hero-trust {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  margin-top: 2rem;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+}
+.hero-trust-sep {
+  color: rgba(255,255,255,0.18);
+}
+
+/* ══════════════════════════════
+   PLATFORM COMPARISON TABLE
+══════════════════════════════ */
+.platform-compare {
+  margin-top: 5rem;
+  padding-top: 4rem;
+  border-top: 1px solid var(--clr-faint);
+}
+.platform-compare-label {
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--clr-red);
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+}
+.platform-compare-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-white);
+  margin-bottom: 2rem;
+  letter-spacing: -0.01em;
+}
+.compare-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.compare-card {
+  border: 1px solid var(--clr-faint);
+  border-radius: 6px;
+  padding: 1.75rem 2rem;
+}
+.compare-card--conv { opacity: 0.52; }
+.compare-card--cliban {
+  border-color: rgba(184,22,32,0.35);
+  background: rgba(184,22,32,0.04);
+}
+.compare-card-label {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--clr-muted);
+  margin-bottom: 1.25rem;
+}
+.compare-card--cliban .compare-card-label { color: var(--clr-red); }
+.compare-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.compare-list li {
+  font-size: 0.875rem;
+  color: var(--clr-muted);
+  padding-left: 1.1rem;
+  position: relative;
+  line-height: 1.5;
+}
+.compare-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+}
+.compare-card--cliban .compare-list li { color: var(--clr-white); }
+.compare-card--cliban .compare-list li::before { content: '✓'; color: var(--clr-red); }
+
+/* ── Supporters folded into Validation section ── */
+.news-supported {
+  margin-top: 3rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--clr-faint);
+  text-align: center;
+}
+
+/* ── Footer LinkedIn link ── */
+.footer-linkedin {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+  transition: color var(--transition);
+}
+.footer-linkedin:hover {
+  color: rgba(255,255,255,0.8);
 }
