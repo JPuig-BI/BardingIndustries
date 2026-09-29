@@ -1,742 +1,549 @@
-/* ============================================================
-   BARDING INDUSTRIES — main.js
-   ============================================================ */
-
-/* ── Navbar: add .scrolled class on scroll ── */
+/* Barding Industries — shared site behavior */
 (function () {
-  const navbar = document.getElementById('navbar');
-  if (!navbar) return;
+  "use strict";
 
-  function updateNav() {
-    if (window.scrollY > 40) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
+  /* Flag JS as available — CSS only hides .reveal elements under html.js,
+     so no-JS / JS-failure visitors always see full content. */
+  document.documentElement.classList.add("js");
+
+  /* ---------------- footer copyright year ---------------- */
+  var copyrightYear = document.getElementById("copyright-year");
+  if (copyrightYear) copyrightYear.textContent = new Date().getFullYear();
+
+  /* ---------------- nav: compact on scroll ---------------- */
+  var navbar = document.getElementById("navbar");
+  function onScroll() {
+    if (!navbar) return;
+    if (window.scrollY > 40) navbar.classList.add("is-compact");
+    else navbar.classList.remove("is-compact");
+  }
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  /* ---------------- shared "covered by an overlay" regions ----------------
+     #main-content and footer can be covered by two independent overlays —
+     the full-screen mobile nav panel and the briefing modal — either of
+     which can be open at once (the mobile nav's own briefing button opens
+     the modal without closing the nav behind it). Route both overlays'
+     inert-toggling for these two shared regions through one recompute so
+     closing one overlay never lifts inert while the other is still open. */
+  var sharedCoveredRegions = [document.getElementById("main-content"), document.querySelector("footer")].filter(Boolean);
+  function isOverlayOpen() {
+    var navOpen = typeof links !== "undefined" && links && links.classList.contains("is-open");
+    var modalOpen = typeof scrim !== "undefined" && scrim && scrim.classList.contains("is-open");
+    return navOpen || modalOpen;
+  }
+  function refreshSharedInert() {
+    var covered = isOverlayOpen();
+    sharedCoveredRegions.forEach(function (el) {
+      if (covered) el.setAttribute("inert", "");
+      else el.removeAttribute("inert");
+    });
+    /* also the shared body-scroll lock: only lift it once NEITHER overlay
+       is open, so closing one while the other is still open (e.g. opening
+       the briefing modal from inside the open mobile nav, then closing
+       just the modal) doesn't unlock background scroll early. */
+    document.body.style.overflow = covered ? "hidden" : "";
+    /* the cookie bar and back-to-top button are siblings of #navbar, not
+       descendants of #main-content/footer, so the inert cascade above
+       never reaches them — but the mobile nav panel visually paints over
+       both (z-index 200 vs. their 190/150). Without this they'd stay in
+       the tab order/AT tree, reachable by tabbing past the open nav's own
+       links, while invisible underneath it. Each keeps its own separate
+       condition (ack state; scroll position) — this just adds "is an
+       overlay currently open" as an extra reason to be inert, re-checked
+       the instant either overlay's open state changes rather than only on
+       their own triggering events (accept click; scroll). */
+    if (typeof syncCookieBarInert === "function") syncCookieBarInert();
+    if (typeof syncBackToTop === "function") syncBackToTop();
   }
 
-  window.addEventListener('scroll', updateNav, { passive: true });
-  updateNav();
-})();
+  /* ---------------- nav: mobile toggle ---------------- */
+  var toggle = document.getElementById("nav-toggle");
+  var links = document.getElementById("nav-links");
+  if (toggle && links) {
+    /* .nav-links only becomes an off-canvas panel under the same breakpoint
+       CSS uses (max-width:960px) — on desktop it's normal in-flow nav and
+       must never be inert. Track that breakpoint so the closed off-canvas
+       panel (and, while open, the page content it covers) are excluded from
+       tab order/AT only when it's actually acting as a hidden/covering panel. */
+    var mqMobile = window.matchMedia("(max-width: 960px)");
+    function syncNavInert() {
+      if (mqMobile.matches && !links.classList.contains("is-open")) {
+        links.setAttribute("inert", "");
+      } else {
+        links.removeAttribute("inert");
+      }
+    }
+    syncNavInert();
+    function onBreakpointChange() {
+      /* "is-open" only means anything under the mobile off-canvas layout —
+         if the viewport crosses to desktop width while it's still set
+         (a tablet rotation, or resizing a window past 960px without
+         closing the panel first), syncNavInert() alone would clear this
+         panel's own `inert` flag but leave #main-content/footer inert and
+         body-scroll locked forever, since those are only released by
+         closeNav()'s call to refreshSharedInert(). Do a full closeNav()
+         in that case so nothing is left stranded. */
+      if (!mqMobile.matches && links.classList.contains("is-open")) {
+        closeNav();
+      } else {
+        syncNavInert();
+      }
+    }
+    if (mqMobile.addEventListener) mqMobile.addEventListener("change", onBreakpointChange);
+    else mqMobile.addListener(onBreakpointChange); /* older Safari */
 
-
-/* ── Mobile nav toggle ── */
-(function () {
-  const toggle = document.getElementById('nav-toggle');
-  const links  = document.getElementById('nav-links');
-  if (!toggle || !links) return;
-
-  toggle.addEventListener('click', function () {
-    const open = links.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', open);
-  });
-
-  // Close menu when a link is clicked
-  links.querySelectorAll('a').forEach(function (link) {
-    link.addEventListener('click', function () {
-      links.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
+    function openNav() {
+      toggle.setAttribute("aria-expanded", "true");
+      links.classList.add("is-open");
+      links.removeAttribute("inert");
+      refreshSharedInert();
+    }
+    function closeNav() {
+      toggle.setAttribute("aria-expanded", "false");
+      links.classList.remove("is-open");
+      refreshSharedInert();
+      syncNavInert();
+    }
+    toggle.addEventListener("click", function () {
+      var open = toggle.getAttribute("aria-expanded") === "true";
+      if (open) closeNav();
+      else openNav();
     });
-  });
-})();
+    links.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("click", closeNav);
+    });
+    document.addEventListener("keydown", function (e) {
+      /* the briefing modal can be opened from inside the open mobile nav
+         (its own "Request a Briefing" button); when both are open the
+         modal is the topmost layer (it's also inert-locked out via
+         #navbar), so it owns Escape first — closeNav() only fires once
+         the modal isn't up, so a second Escape then closes the nav. */
+      var modalOpen = typeof scrim !== "undefined" && scrim && scrim.classList.contains("is-open");
+      if (e.key === "Escape" && links.classList.contains("is-open") && !modalOpen) {
+        closeNav();
+        toggle.focus();
+      }
+    });
+  }
 
+  /* ---------------- active nav link ---------------- */
+  (function activeLink() {
+    var path = location.pathname.replace(/\/index\.html$/, "/").replace(/\/$/, "") || "/";
+    var page = path.split("/").pop() || "index.html";
+    if (page === "") page = "index.html";
+    document.querySelectorAll(".nav-links a[data-nav]").forEach(function (a) {
+      if (a.getAttribute("data-nav") === page) {
+        a.classList.add("is-active");
+        a.setAttribute("aria-current", "page");
+      }
+    });
+  })();
 
-/* ── Scroll-reveal: fade in sections as they enter viewport ── */
-(function () {
-  const revealEls = document.querySelectorAll('.reveal');
-  if (!revealEls.length) return;
-
-  const observer = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
+  /* ---------------- scroll reveal ---------------- */
+  var revealEls = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window && revealEls.length) {
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    revealEls.forEach(function (el) {
+      io.observe(el);
+    });
+    /* safety net: force-reveal anything the observer missed (e.g. elements
+       that never intersect because they're short and off-viewport at load) */
+    setTimeout(function () {
+      revealEls.forEach(function (el) {
+        el.classList.add("is-visible");
       });
-    },
-    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-  );
-
-  revealEls.forEach(function (el) {
-    observer.observe(el);
-  });
-})();
-
-
-/* ── Smooth scroll for anchor links ── */
-(function () {
-  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
-    anchor.addEventListener('click', function (e) {
-      const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-      const target = document.querySelector(targetId);
-      if (!target) return;
-      e.preventDefault();
-      const navEl   = document.getElementById('navbar');
-      const rawTop  = target.getBoundingClientRect().top + window.scrollY;
-      const compact = navEl ? parseInt(navEl.dataset.compactH || '68', 10) : 68;
-      const full    = navEl ? navEl.offsetHeight : 90;
-      // If destination will be past the scroll threshold, navbar will be compact on arrival
-      const navH    = (rawTop - compact) > 40 ? compact : full;
-      const top     = rawTop - navH;
-      window.scrollTo({ top: top, behavior: 'smooth' });
-    });
-  });
-})();
-
-
-/* ── REEs: count-up animation on scroll ── */
-(function () {
-  var stats = document.querySelector('.rees-stats');
-  if (!stats) return;
-
-  var triggered = false;
-
-  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
-
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function animateNum(el) {
-    var to       = parseInt(el.getAttribute('data-to'), 10);
-    if (!to) return;
-    var prefix   = el.getAttribute('data-prefix') || '';
-    var suffix   = el.getAttribute('data-suffix') || '';
-    var child    = el.querySelector('.rees-stat-of');
-
-    function setFinal() {
-      if (child) {
-        el.childNodes[0].textContent = to + ' ';
-      } else {
-        el.textContent = prefix + to + suffix;
-      }
-    }
-
-    if (reducedMotion) { setFinal(); return; }
-
-    var duration  = 1400;
-    var startTime = null;
-
-    function tick(ts) {
-      if (!startTime) startTime = ts;
-      var elapsed  = ts - startTime;
-      var progress = Math.min(elapsed / duration, 1);
-      var current  = Math.round(easeOutCubic(progress) * to);
-
-      if (child) {
-        el.childNodes[0].textContent = current + ' ';
-      } else {
-        el.textContent = prefix + current + suffix;
-      }
-
-      if (progress < 1) requestAnimationFrame(tick);
-    }
-
-    requestAnimationFrame(tick);
-  }
-
-  var observer = new IntersectionObserver(function (entries) {
-    if (triggered) return;
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        triggered = true;
-        stats.querySelectorAll('.rees-stat-num[data-to]').forEach(animateNum);
-        observer.disconnect();
-      }
-    });
-  }, { threshold: 0.2 });
-
-  observer.observe(stats);
-})();
-
-
-/* ── Contact form: validation + AJAX + sent confirmation ── */
-(function () {
-  const form      = document.getElementById('contact-form');
-  const submitBtn = form ? form.querySelector('.btn-form-submit') : null;
-  if (!form || !submitBtn) return;
-
-  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  function getWrap(field) {
-    return field.closest('.form-field-wrap') || field.parentNode;
-  }
-
-  function setError(field, msg) {
-    field.classList.add('field-error');
-    const wrap = getWrap(field);
-    let err = wrap.querySelector('.field-error-msg');
-    if (!err) {
-      err = document.createElement('span');
-      err.className = 'field-error-msg';
-      wrap.appendChild(err);
-    }
-    err.textContent = msg;
-  }
-
-  function clearErrors() {
-    form.querySelectorAll('.field-error').forEach(function (el) {
-      el.classList.remove('field-error');
-    });
-    form.querySelectorAll('.field-error-msg').forEach(function (el) {
-      el.remove();
+    }, 3000);
+  } else {
+    revealEls.forEach(function (el) {
+      el.classList.add("is-visible");
     });
   }
 
-  function validate() {
-    clearErrors();
-    var ok = true;
-
-    var name         = form.querySelector('[name="name"]');
-    var email        = form.querySelector('[name="email"]');
-    var organization = form.querySelector('[name="organization"]');
-    var message      = form.querySelector('[name="message"]');
-
-    if (!name.value.trim()) {
-      setError(name, 'Name is required.');
-      ok = false;
-    }
-    if (!email.value.trim()) {
-      setError(email, 'Email is required.');
-      ok = false;
-    } else if (!emailRe.test(email.value.trim())) {
-      setError(email, 'Please enter a valid email address.');
-      ok = false;
-    }
-    if (!organization.value.trim()) {
-      setError(organization, 'Organization is required.');
-      ok = false;
-    }
-    var role = form.querySelector('[name="role"]');
-    if (role && !role.value) {
-      var roleTrigger = form.querySelector('.custom-select-trigger');
-      if (roleTrigger) setError(roleTrigger, 'Please select an inquiry type.');
-      ok = false;
-    }
-    if (!message.value.trim()) {
-      setError(message, 'Message is required.');
-      ok = false;
-    }
-
-    return ok;
-  }
-
-  // Clear individual field error on input
-  form.querySelectorAll('.form-field').forEach(function (field) {
-    field.addEventListener('input', function () {
-      this.classList.remove('field-error');
-      var err = getWrap(this).querySelector('.field-error-msg');
-      if (err) err.remove();
-    });
-  });
-
-  function showSent(text) {
-    submitBtn.textContent = text;
-    submitBtn.classList.add('btn-sent');
-    submitBtn.disabled = true;
-  }
-
-  function restoreBtn() {
-    submitBtn.textContent = 'Submit';
-    submitBtn.classList.remove('btn-sent');
-    submitBtn.disabled = false;
-  }
-
-  form.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    if (!validate()) return;
-
-    const action = form.getAttribute('action');
-
-    if (action.includes('YOUR_FORM_ID')) {
-      showSent('Form not configured yet.');
-      setTimeout(restoreBtn, 4000);
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-
-    try {
-      const res = await fetch(action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { Accept: 'application/json' },
-      });
-
-      if (res.ok) {
-        form.reset();
-        // Reset custom select visual state (form.reset() only clears the hidden input)
-        const selVal = form.querySelector('.custom-select-value');
-        if (selVal) { selVal.textContent = 'Inquiry type'; selVal.classList.remove('selected'); }
-        form.querySelectorAll('.custom-select-option').forEach(function (o) { o.removeAttribute('aria-selected'); });
-        showSent("Inquiry received. Our team will respond shortly.");
-        setTimeout(restoreBtn, 5000);
-      } else {
-        showSent('Something went wrong. Please try again.');
-        setTimeout(restoreBtn, 4000);
-      }
-    } catch (_) {
-      showSent('Network error. Please try again.');
-      setTimeout(restoreBtn, 4000);
-    }
-  });
-})();
-
-
-/* ── Platform sticky-scroll driver ── */
-(function () {
-  const outer   = document.getElementById('platform-scroll');
-  const steps   = document.querySelectorAll('.platform-step');
-  const visuals = document.querySelectorAll('.platform-visual');
-  const dots    = document.querySelectorAll('.platform-dot');
-  if (!outer || !steps.length) return;
-
-  const TOTAL = steps.length; // 4
-
-  function setActive(idx) {
-    steps.forEach(function (el, i)   { el.classList.toggle('active', i === idx); });
-    visuals.forEach(function (el, i) { el.classList.toggle('active', i === idx); });
-    dots.forEach(function (el, i)    { el.classList.toggle('active', i === idx); });
-  }
-
-  function updatePlatform() {
-    if (window.innerWidth <= 768) return;
-
-    const outerRect   = outer.getBoundingClientRect();
-    const outerTop    = outerRect.top + window.scrollY;
-    const outerHeight = outer.offsetHeight;
-    const scrollRange = outerHeight - window.innerHeight;
-
-    if (scrollRange <= 0) return;
-
-    const scrolled = window.scrollY - outerTop;
-    const progress = scrolled / scrollRange;
-    const clamped  = Math.max(0, Math.min(0.9999, progress));
-    const active   = Math.floor(clamped * TOTAL);
-
-    setActive(active);
-  }
-
-  // Initialise first visual
-  setActive(0);
-
-  window.addEventListener('scroll', updatePlatform, { passive: true });
-  window.addEventListener('resize', updatePlatform, { passive: true });
-  updatePlatform();
-})();
-
-
-/* ── Active nav link highlighting on scroll ── */
-(function () {
-  const sections = ['rees', 'platform', 'space', 'team', 'news'];
-  const navLinks = document.querySelectorAll('.nav-links a');
-  const navH     = 80;
-
-  function getActiveSection() {
-    for (let i = sections.length - 1; i >= 0; i--) {
-      const el = document.getElementById(sections[i]);
-      if (!el) continue;
-      if (window.scrollY >= el.offsetTop - navH - 20) {
-        return sections[i];
-      }
-    }
-    return null;
-  }
-
-  function updateActiveLink() {
-    const active = getActiveSection();
-    navLinks.forEach(function (link) {
-      if (link.classList.contains('btn-nav')) return;
-      const href = link.getAttribute('href').replace('#', '');
-      const isActive = href === active;
-      link.classList.toggle('active-link', isActive);
-      if (isActive) link.setAttribute('aria-current', 'true');
-      else          link.removeAttribute('aria-current');
-    });
-  }
-
-  window.addEventListener('scroll', updateActiveLink, { passive: true });
-})();
-
-
-/* ── Back to top ── */
-(function () {
-  const btn = document.getElementById('back-to-top');
-  if (!btn) return;
-
-  window.addEventListener('scroll', function () {
-    btn.classList.toggle('visible', window.scrollY > 400);
-  }, { passive: true });
-
-  btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-})();
-
-
-/* ── Hero grid cursor highlight (red core + purple halo) ── */
-(function () {
-  const hero = document.getElementById('hero');
-  if (!hero) return;
-
-  hero.addEventListener('mousemove', function (e) {
-    const rect = hero.getBoundingClientRect();
-    hero.style.setProperty('--cx', (e.clientX - rect.left) + 'px');
-    hero.style.setProperty('--cy', (e.clientY - rect.top)  + 'px');
-  });
-
-  hero.addEventListener('mouseleave', function () {
-    hero.style.setProperty('--cx', '-999px');
-    hero.style.setProperty('--cy', '-999px');
-  });
-})();
-
-
-
-
-
-/* ── Platform visual 1: extraction ── */
-(function () {
-  var svg = document.querySelector('.pv--extraction .pv-ext-svg');
-  if (!svg) return;
-
-  var NS   = 'http://www.w3.org/2000/svg';
-  var spcX = 13 * 1.5  - 0.5;
-  var spcY = 13 * Math.sqrt(3) - 0.5;
-  var cols = 21;
-  var cxS  = (420 - (cols - 1) * spcX) / 2;
-  var yBase = 270;
-
-  var srf = [
-    {x:0,   y:174}, {x:22,  y:168}, {x:44,  y:175},
-    {x:66,  y:170}, {x:88,  y:165}, {x:110, y:173},
-    {x:132, y:169}, {x:154, y:176}, {x:176, y:163},
-    {x:198, y:172}, {x:220, y:168}, {x:242, y:176},
-    {x:264, y:162}, {x:286, y:170}, {x:308, y:167},
-    {x:330, y:175}, {x:352, y:171}, {x:374, y:176},
-    {x:420, y:173}
-  ];
-  function surfY(x) {
-    for (var i = 0; i < srf.length - 1; i++) {
-      var a = srf[i], b = srf[i + 1];
-      if (x >= a.x && x <= b.x)
-        return a.y + (b.y - a.y) * (x - a.x) / (b.x - a.x);
-    }
-    return srf[srf.length - 1].y;
-  }
-
-  var ree = {
-    '2,2':'nd','8,1':'nd','5,3':'tb','13,2':'tb',
-    '11,2':'dy','3,1':'sc','17,3':'sc','19,2':'y','15,1':'y'
-  };
-  var shades = ['r0','r1','r2','r3','r4'];
-
-  function hexD(cx, cy, rad) {
-    var pts = [];
-    for (var i = 0; i < 6; i++) {
-      var a = (Math.PI / 3) * i;
-      pts.push((cx + rad * Math.cos(a)).toFixed(1) + ',' + (cy + rad * Math.sin(a)).toFixed(1));
-    }
-    return 'M ' + pts.join(' L ') + ' Z';
-  }
-  function mkPath(cls, d) {
-    var p = document.createElementNS(NS, 'path');
-    p.setAttribute('class', cls); p.setAttribute('d', d); return p;
-  }
-
-  /* Rock hex grid */
-  var hexG = document.createElementNS(NS, 'g');
-  hexG.setAttribute('class', 'pv-hex-grid');
-  for (var col = 0; col < cols; col++) {
-    var cx = cxS + col * spcX;
-    var sy = surfY(cx);
-    for (var row = 0; row < 7; row++) {
-      var cy = yBase - row * spcY - (col % 2 === 1 ? spcY / 2 : 0);
-      if (cy < sy) continue;
-      var key = col + ',' + row;
-      var cls = ree[key]
-        ? 'pv-hex-cell pv-hx--' + ree[key]
-        : 'pv-hex-cell pv-hx--' + shades[(col * 7 + row * 13) % 5];
-      hexG.appendChild(mkPath(cls, hexD(cx, cy, 13)));
-    }
-  }
-  svg.appendChild(hexG);
-
-  /* Grey particulate — 26 items, 5 staggered zones spanning y = 28–136 */
-  var grey = [
-    {x:45,y:33,r:6},{x:130,y:28,r:5},{x:215,y:36,r:7},{x:308,y:30,r:5},{x:392,y:38,r:6},
-    {x:15,y:58,r:6},{x:82,y:50,r:8},{x:175,y:54,r:6},{x:262,y:52,r:8},{x:350,y:56,r:6},{x:408,y:60,r:5},
-    {x:35,y:78,r:6},{x:125,y:85,r:6},{x:210,y:76,r:6},{x:285,y:82,r:6},{x:360,y:79,r:6},
-    {x:20,y:105,r:5},{x:108,y:112,r:7},{x:188,y:100,r:6},{x:280,y:108,r:8},{x:368,y:102,r:6},
-    {x:65,y:130,r:6},{x:152,y:125,r:7},{x:240,y:135,r:6},{x:322,y:130,r:5},{x:408,y:133,r:6}
-  ];
-  /* opacity scales with radius: larger = nearer = more opaque */
-  function depthOpacity(rad, base, step) {
-    return (base + (rad - 5) * step).toFixed(2);
-  }
-
-  var gG = document.createElementNS(NS, 'g');
-  grey.forEach(function (a) {
-    var p = mkPath('pv-amb-hex', hexD(a.x, a.y, a.r));
-    p.setAttribute('opacity', depthOpacity(a.r, 0.38, 0.09));
-    gG.appendChild(p);
-  });
-  svg.appendChild(gG);
-
-  /* Extra REE hexes — 15 items, same positions as V3 */
-  var extras = [
-    {cls:'nd',x:110,y:32, r:5},{cls:'sc',x:285,y:36, r:7},
-    {cls:'tb',x:170,y:38, r:6},{cls:'y', x:372,y:35, r:6},
-    {cls:'y', x:52, y:52, r:7},{cls:'nd',x:100,y:62, r:8},
-    {cls:'dy',x:340,y:45, r:8},{cls:'nd',x:242,y:62, r:7},
-    {cls:'tb',x:345,y:70, r:5},{cls:'sc',x:140,y:95, r:5},
-    {cls:'dy',x:170,y:100,r:6},{cls:'nd',x:400,y:108,r:5},
-    {cls:'nd',x:82, y:125,r:5},{cls:'dy',x:205,y:135,r:6},
-    {cls:'sc',x:335,y:120,r:5}
-  ];
-  var exG = document.createElementNS(NS, 'g');
-  extras.forEach(function (d) {
-    var p = mkPath('pv-float-hex pv-fhx--' + d.cls, hexD(d.x, d.y, d.r));
-    p.setAttribute('opacity', depthOpacity(d.r, 0.42, 0.08));
-    exG.appendChild(p);
-  });
-  svg.appendChild(exG);
-
-  /* Primary 5 REE hexes — ordered by atomic number (Sc→Y→Nd→Tb→Dy), left to right */
-  var floats = [
-    {cls:'sc', cx:60,  cy:88,  r:13},
-    {cls:'y',  cx:148, cy:68,  r:11},
-    {cls:'nd', cx:228, cy:92,  r:14},
-    {cls:'tb', cx:315, cy:72,  r:12},
-    {cls:'dy', cx:385, cy:85,  r:15}
-  ];
-  var fG = document.createElementNS(NS, 'g');
-  fG.setAttribute('class', 'pv-float-group');
-  floats.forEach(function (d) {
-    fG.appendChild(mkPath('pv-float-hex pv-fh--' + d.cls, hexD(d.cx, d.cy, d.r)));
-  });
-  svg.appendChild(fG);
-})();
-
-/* ── Platform visual 2: separation ── */
-(function () {
-  var svg = document.querySelector('.pv--separation .pv-sep-svg');
-  if (!svg) return;
-
-  var NS = 'http://www.w3.org/2000/svg';
-  var clrMap = {nd:'#5280b4',tb:'#825a9e',dy:'#348c5a',sc:'#be6e2a',y:'#b81620'};
-
-  /*
-   * Primary 5 — scrambled (mixed in solution).
-   * sc moved from (60,68)→(30,70) and dy from (148,85)→(155,72)
-   * to avoid overlap with extras at those positions.
-   * Same slight radius variation as Extraction for visual consistency.
-   */
-  /* tcx positions ordered by atomic number: Sc(21)→42, Y(39)→126, Nd(60)→210, Tb(65)→294, Dy(66)→378 */
-  var elems = [
-    {id:'nd',color:'#5280b4',fcx:305,fcy:78, r:14,tcx:210,num:'60',sym:'Nd'},
-    {id:'tb',color:'#825a9e',fcx:385,fcy:60, r:12,tcx:294,num:'65',sym:'Tb'},
-    {id:'dy',color:'#348c5a',fcx:155,fcy:72, r:15,tcx:378,num:'66',sym:'Dy'},
-    {id:'sc',color:'#be6e2a',fcx:30, fcy:70, r:13,tcx:42, num:'21',sym:'Sc'},
-    {id:'y', color:'#b81620',fcx:222,fcy:72, r:11,tcx:126,num:'39',sym:'Y' }
-  ];
-
-  /* Same 15 extras as Extraction. tcx absent = no ghost arrow (escaped). tcx updated for atomic-number tile order. */
-  var extras = [
-    {cls:'nd',x:110,y:32, r:5},              /* escaped */
-    {cls:'sc',x:285,y:36, r:7,tcx:42 },
-    {cls:'tb',x:170,y:38, r:6,tcx:294},
-    {cls:'y', x:372,y:35, r:6,tcx:126},
-    {cls:'y', x:52, y:52, r:7},              /* escaped */
-    {cls:'nd',x:100,y:62, r:8,tcx:210},
-    {cls:'dy',x:340,y:45, r:8,tcx:378},
-    {cls:'nd',x:242,y:62, r:7,tcx:210},
-    {cls:'tb',x:345,y:70, r:5,tcx:294},
-    {cls:'sc',x:140,y:95, r:5,tcx:42 },
-    {cls:'dy',x:170,y:100,r:6,tcx:378},
-    {cls:'nd',x:400,y:108,r:5,tcx:210},
-    {cls:'nd',x:82, y:125,r:5,tcx:210},
-    {cls:'dy',x:205,y:135,r:6,tcx:378},
-    {cls:'sc',x:335,y:120,r:5,tcx:42 }
-  ];
-
-  var tileTop = 186, tileH = 62, tileW = 56;
-
-  function hexD(cx, cy, rad) {
-    var pts = [];
-    for (var i = 0; i < 6; i++) {
-      var a = (Math.PI / 3) * i;
-      pts.push((cx + rad * Math.cos(a)).toFixed(1) + ',' + (cy + rad * Math.sin(a)).toFixed(1));
-    }
-    return 'M ' + pts.join(' L ') + ' Z';
-  }
-  function el(tag) { return document.createElementNS(NS, tag); }
-  function mkPath(cls, d) {
-    var p = el('path'); p.setAttribute('class', cls); p.setAttribute('d', d); return p;
-  }
-  function curvePath(x1, y1, x2, y2) {
-    var cp = Math.min(50, (y2 - y1) * 0.42);
-    return 'M '+x1+','+y1+' C '+x1+','+(y1+cp)+' '+x2+','+(y2-cp)+' '+x2+','+y2;
-  }
-
-  /* Arrowheads */
-  var defs = el('defs');
-  elems.forEach(function (e) {
-    var m = el('marker');
-    m.setAttribute('id',          'arw-'+e.id);
-    m.setAttribute('viewBox',     '0 0 8 8');
-    m.setAttribute('refX',        '7');
-    m.setAttribute('refY',        '4');
-    m.setAttribute('markerWidth', '5');
-    m.setAttribute('markerHeight','5');
-    m.setAttribute('orient',      'auto-start-reverse');
-    var tri = el('path');
-    tri.setAttribute('d','M 0 0 L 8 4 L 0 8 Z');
-    tri.setAttribute('fill', e.color);
-    m.appendChild(tri); defs.appendChild(m);
-  });
-  svg.appendChild(defs);
-
-  /* Ghost arrows first (under everything) */
-  extras.forEach(function (d) {
-    if (d.tcx === undefined) return;
-    var arc = el('path');
-    arc.setAttribute('d',             curvePath(d.x, d.y + d.r + 1, d.tcx, tileTop - 2));
-    arc.setAttribute('fill',          'none');
-    arc.setAttribute('stroke',        clrMap[d.cls]);
-    arc.setAttribute('stroke-opacity','0.12');
-    arc.setAttribute('stroke-width',  '1');
-    svg.appendChild(arc);
-  });
-
-  /* Extra REE hexes */
-  var exG = el('g');
-  extras.forEach(function (d) {
-    var p = mkPath('pv-float-hex pv-fhx--'+d.cls, hexD(d.x, d.y, d.r));
-    p.setAttribute('opacity', (0.42 + (d.r - 5) * 0.08).toFixed(2));
-    exG.appendChild(p);
-  });
-  svg.appendChild(exG);
-
-  /* Primary 5: hex + arrow + tile */
-  elems.forEach(function (e) {
-    var hex = el('path');
-    hex.setAttribute('class','pv-float-hex pv-fh--'+e.id);
-    hex.setAttribute('d', hexD(e.fcx, e.fcy, e.r));
-    svg.appendChild(hex);
-
-    var arc = el('path');
-    arc.setAttribute('d',             curvePath(e.fcx, e.fcy + e.r + 1, e.tcx, tileTop - 2));
-    arc.setAttribute('fill',          'none');
-    arc.setAttribute('stroke',        e.color);
-    arc.setAttribute('stroke-opacity','0.65');
-    arc.setAttribute('stroke-width',  '1.5');
-    arc.setAttribute('marker-end',    'url(#arw-'+e.id+')');
-    svg.appendChild(arc);
-
-    var tx = e.tcx - tileW / 2;
-    var rect = el('rect');
-    rect.setAttribute('x',             tx);
-    rect.setAttribute('y',             tileTop);
-    rect.setAttribute('width',         tileW);
-    rect.setAttribute('height',        tileH);
-    rect.setAttribute('rx',            '3');
-    rect.setAttribute('fill',          'rgba(52,46,48,0.85)');
-    rect.setAttribute('stroke',        e.color);
-    rect.setAttribute('stroke-opacity','0.6');
-    rect.setAttribute('stroke-width',  '1');
-    svg.appendChild(rect);
-
-    var tNum = el('text');
-    tNum.setAttribute('x',    e.tcx);
-    tNum.setAttribute('y',    tileTop + 17);
-    tNum.setAttribute('class','pv-st-num');
-    tNum.textContent = e.num;
-    svg.appendChild(tNum);
-
-    var tSym = el('text');
-    tSym.setAttribute('x',    e.tcx);
-    tSym.setAttribute('y',    tileTop + 48);
-    tSym.setAttribute('class','pv-st-sym pv-st--'+e.id);
-    tSym.textContent = e.sym;
-    svg.appendChild(tSym);
-  });
-})();
-
-
-
-
-/* ── Custom select dropdown ── */
-(function () {
-  document.querySelectorAll('.custom-select').forEach(function (select) {
-    var trigger  = select.querySelector('.custom-select-trigger');
-    var dropdown = select.querySelector('.custom-select-dropdown');
-    var valueEl  = select.querySelector('.custom-select-value');
-    var hidden   = select.querySelector('input[type="hidden"]');
-    var options  = select.querySelectorAll('.custom-select-option');
-    if (!trigger || !dropdown) return;
-
-    function open() {
-      select.classList.add('open');
-      trigger.setAttribute('aria-expanded', 'true');
-    }
-
-    function close() {
-      select.classList.remove('open');
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-
-    trigger.addEventListener('click', function (e) {
-      e.stopPropagation();
-      select.classList.contains('open') ? close() : open();
-    });
-
-    options.forEach(function (opt) {
-      opt.addEventListener('click', function () {
-        var val  = opt.getAttribute('data-value');
-        var text = opt.textContent.trim();
-        if (valueEl) {
-          valueEl.textContent = text;
-          valueEl.classList.add('selected');
+  /* ---------------- briefing modal ---------------- */
+  var scrim = document.getElementById("briefing-modal");
+  if (scrim) {
+    var openers = document.querySelectorAll("[data-modal-open]");
+    var closers = scrim.querySelectorAll("[data-modal-close]");
+    /* navbar is modal-only (the mobile nav panel doesn't cover itself);
+       #main-content/footer are shared with the mobile nav overlay — see
+       refreshSharedInert() above, which both overlays route through. */
+    var modalOnlyRegions = [document.getElementById("navbar")].filter(Boolean);
+    var lastFocused = null;
+
+    /* ---- custom select (Inquiry Type) ----
+       Replaces the native <select> entirely (see the CSS comment above
+       .select-custom for why) with a hidden input carrying the form value
+       and a hand-built listbox for the open/hover states. */
+    var inquirySelect = (function () {
+      var root = scrim.querySelector("[data-select]");
+      if (!root) return null;
+      var trigger = root.querySelector(".select-trigger");
+      var labelEl = root.querySelector("[data-select-label]");
+      var listbox = root.querySelector(".select-listbox");
+      var options = Array.prototype.slice.call(listbox.querySelectorAll('[role="option"]'));
+      var hiddenInput = root.querySelector("[data-select-value]");
+      var errorEl = root.parentElement.querySelector("[data-select-error]");
+      var defaultLabel = labelEl.textContent;
+      var activeIndex = -1;
+
+      /* "Other" reveals a free-text field with no `name` of its own — the
+         submit handler below folds its value into Inquiry_Type so what
+         Formspark receives is the specified text, never the literal word
+         "Other". Toggling `hidden` on its wrapper also takes the input out
+         of constraint validation when it's not shown, so `required` only
+         ever applies while it's actually visible. */
+      var otherField = scrim.querySelector("#inquiry-other-field");
+      var otherInput = otherField ? otherField.querySelector("input") : null;
+      function syncOtherField(value) {
+        if (!otherField) return;
+        var isOther = value === "Other";
+        otherField.hidden = !isOther;
+        if (otherInput) {
+          otherInput.required = isOther;
+          if (!isOther) otherInput.value = "";
         }
-        if (hidden)  hidden.value = val;
-        options.forEach(function (o) { o.removeAttribute('aria-selected'); });
-        opt.setAttribute('aria-selected', 'true');
+      }
+
+      function setActive(idx) {
+        if (activeIndex >= 0 && options[activeIndex]) options[activeIndex].classList.remove("is-active");
+        activeIndex = idx;
+        var opt = options[activeIndex];
+        if (opt) {
+          opt.classList.add("is-active");
+          opt.scrollIntoView({ block: "nearest" });
+          listbox.setAttribute("aria-activedescendant", opt.id);
+        }
+      }
+      function isOpen() { return !listbox.hidden; }
+      function open() {
+        listbox.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+        root.classList.add("is-open");
+        var selectedIdx = options.findIndex(function (o) { return o.getAttribute("aria-selected") === "true"; });
+        setActive(selectedIdx >= 0 ? selectedIdx : 0);
+        listbox.focus();
+      }
+      function close() {
+        listbox.hidden = true;
+        trigger.setAttribute("aria-expanded", "false");
+        root.classList.remove("is-open");
+      }
+      function toggle() { if (isOpen()) close(); else open(); }
+      function selectOption(opt, opts) {
+        options.forEach(function (o) { o.setAttribute("aria-selected", o === opt ? "true" : "false"); });
+        hiddenInput.value = opt.getAttribute("data-value");
+        labelEl.textContent = opt.textContent;
+        root.classList.remove("has-error");
+        if (errorEl) errorEl.hidden = true;
+        trigger.removeAttribute("aria-invalid");
+        syncOtherField(hiddenInput.value);
         close();
+        if (!opts || !opts.silent) trigger.focus();
+      }
+      function setValue(value) {
+        var opt = options.filter(function (o) { return o.getAttribute("data-value") === value; })[0];
+        if (opt) selectOption(opt, { silent: true });
+      }
+      function reset() {
+        options.forEach(function (o) { o.removeAttribute("aria-selected"); });
+        hiddenInput.value = "";
+        labelEl.textContent = defaultLabel;
+        root.classList.remove("has-error");
+        if (errorEl) errorEl.hidden = true;
+        trigger.removeAttribute("aria-invalid");
+        syncOtherField("");
+        close();
+      }
+      function showError() {
+        root.classList.add("has-error");
+        if (errorEl) errorEl.hidden = false;
+        trigger.setAttribute("aria-invalid", "true");
+        trigger.focus();
+      }
+
+      trigger.addEventListener("click", toggle);
+      trigger.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          if (!isOpen()) open();
+        } else if (e.key === "Escape" && isOpen()) {
+          e.stopPropagation();
+          close();
+        }
+      });
+      options.forEach(function (opt, i) {
+        opt.addEventListener("click", function () { selectOption(opt); });
+        opt.addEventListener("mouseenter", function () { setActive(i); });
+      });
+      listbox.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown") { e.preventDefault(); setActive(Math.min(activeIndex + 1, options.length - 1)); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); setActive(Math.max(activeIndex - 1, 0)); }
+        else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (options[activeIndex]) selectOption(options[activeIndex]); }
+        else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); trigger.focus(); }
+        else if (e.key === "Tab") { e.preventDefault(); close(); trigger.focus(); }
+      });
+      document.addEventListener("click", function (e) {
+        if (isOpen() && !root.contains(e.target)) close();
+      });
+
+      return { setValue: setValue, reset: reset, close: close, showError: showError, hiddenInput: hiddenInput, otherInput: otherInput };
+    })();
+
+    function openModal(inquiryType) {
+      lastFocused = document.activeElement;
+      /* clear any success/error message left over from a previous visit to
+         the modal — otherwise a fresh, not-yet-submitted form can appear to
+         already show "Thanks, we'll follow up shortly." from last time. */
+      if (status) { status.textContent = ""; status.className = "form-status"; }
+      scrim.removeAttribute("inert");
+      scrim.classList.add("is-open");
+      modalOnlyRegions.forEach(function (el) { el.setAttribute("inert", ""); });
+      refreshSharedInert();
+      if (inquiryType && inquirySelect) inquirySelect.setValue(inquiryType);
+      /* focus immediately (not after the entrance transition) so a fast Tab
+         press right after opening can never land on hidden background content */
+      var firstField = scrim.querySelector("input:not([type=hidden]), textarea");
+      if (firstField) firstField.focus();
+    }
+    function closeModal() {
+      scrim.classList.remove("is-open");
+      scrim.setAttribute("inert", "");
+      modalOnlyRegions.forEach(function (el) { el.removeAttribute("inert"); });
+      refreshSharedInert();
+      if (inquirySelect) inquirySelect.close();
+      if (lastFocused) lastFocused.focus();
+    }
+    openers.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        openModal(btn.getAttribute("data-modal-open") || "");
       });
     });
-
-  
-    document.addEventListener('click', function () { close(); });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') close();
+    closers.forEach(function (el) {
+      el.addEventListener("click", closeModal);
     });
-  });
-})();
+    scrim.addEventListener("click", function (e) {
+      if (e.target === scrim) closeModal();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (!scrim.classList.contains("is-open")) return;
+      if (e.key === "Escape") { closeModal(); return; }
+      if (e.key === "Tab") {
+        var focusable = scrim.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
 
+    /* form submit */
+    var form = scrim.querySelector("#briefing-form");
+    var status = scrim.querySelector(".form-status");
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        /* Inquiry Type is now a hidden input (see the custom select above),
+           so the browser's native `required` validation can't see or focus
+           it — check and surface it ourselves before submitting. */
+        if (inquirySelect && !inquirySelect.hiddenInput.value) {
+          inquirySelect.showError();
+          inquirySelect.close();
+          return;
+        }
+        var submitBtn = form.querySelector("button[type=submit]");
+        var submitLabel = submitBtn.querySelector("[data-submit-label]");
+        submitBtn.disabled = true;
+        if (submitLabel) submitLabel.textContent = "Sending…";
+        /* Formspark's `_email` key customizes the notification it sends us —
+           here just the subject line, so a request is identifiable in an
+           inbox list without opening it. See:
+           https://documentation.formspark.io/customization/notification-email.html */
+        var payload = Object.fromEntries(new FormData(form));
+        /* "Other" has no `name` of its own on the specify field (see the
+           select code above) — fold its text into Inquiry_Type here so
+           Formspark only ever sees what was actually specified, never the
+           literal word "Other". */
+        if (payload.Inquiry_Type === "Other" && inquirySelect && inquirySelect.otherInput) {
+          var specified = inquirySelect.otherInput.value.trim();
+          if (specified) payload.Inquiry_Type = specified;
+        }
+        /* Which page's "Request a Briefing" button was actually clicked —
+           a free signal of what the visitor is interested in, since the
+           same modal/form is shared across every page. */
+        var PAGE_NAMES = {
+          "": "Home",
+          "index.html": "Home",
+          "technology.html": "Technology",
+          "space.html": "Space",
+          "company.html": "Company",
+          "privacy.html": "Privacy Policy",
+        };
+        var currentPage = window.location.pathname.split("/").pop();
+        payload.Source_Page = PAGE_NAMES[currentPage] || document.title;
+        payload._email = {
+          subject: "New briefing request — " + payload.Name + " (" + payload.Organization + ")",
+        };
+        fetch(form.action, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+        })
+          .then(function (res) {
+            if (res.ok) {
+              status.textContent = "Thanks, we'll follow up shortly.";
+              status.className = "form-status is-visible is-success";
+              form.reset();
+              if (inquirySelect) inquirySelect.reset();
+            } else {
+              throw new Error("bad response");
+            }
+          })
+          .catch(function () {
+            status.textContent = "Something went wrong. Email us directly at inquiries@bardingindustries.com.";
+            status.className = "form-status is-visible is-error";
+          })
+          .finally(function () {
+            submitBtn.disabled = false;
+            if (submitLabel) submitLabel.textContent = "Submit request";
+          });
+      });
+    }
+  }
 
-/* ── Cookie consent ── */
-(function () {
-  const bar    = document.getElementById('cookie-bar');
-  const accept = document.getElementById('cookie-accept');
-  const deny   = document.getElementById('cookie-deny');
-  if (!bar || !accept || !deny) return;
+  /* ---------------- back to top ---------------- */
+  var backToTop = document.getElementById("back-to-top");
+  if (backToTop) {
+    var themedSections = document.querySelectorAll("section.on-paper, section.on-ink, section.on-ink-surface");
+    /* assigned as a var (not `function syncBackToTop(){}`) so the identifier
+       hoists to the whole IIFE — under "use strict" a block-scoped function
+       declaration here would be invisible to refreshSharedInert() above. */
+    var syncBackToTop = function () {
+      var visible = window.scrollY > 400;
+      backToTop.classList.toggle("is-visible", visible);
+      /* ships with `inert` in the HTML by default (page loads at the top,
+         so it starts hidden) — keep it out of the tab order/AT whenever
+         it's invisible or covered by an open overlay (mobile nav/modal),
+         not just visually hidden via opacity. */
+      if (visible && !isOverlayOpen()) backToTop.removeAttribute("inert");
+      else backToTop.setAttribute("inert", "");
 
-  if (localStorage.getItem('cookie-consent')) return;
+      /* match whatever section currently sits behind the button, so it
+         doesn't sit as a dark box on light (.on-paper) sections. */
+      var probeY = window.innerHeight - 54;
+      var onPaper = false;
+      for (var i = 0; i < themedSections.length; i++) {
+        var r = themedSections[i].getBoundingClientRect();
+        if (r.top <= probeY && r.bottom >= probeY) {
+          onPaper = themedSections[i].classList.contains("on-paper");
+          break;
+        }
+      }
+      backToTop.classList.toggle("on-paper-bg", onPaper);
+    };
+    syncBackToTop();
+    window.addEventListener("scroll", syncBackToTop, { passive: true });
+    window.addEventListener("resize", syncBackToTop);
+    backToTop.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 
-  setTimeout(function () { bar.classList.add('visible'); }, 1200);
+  /* ---------------- cookie notice ---------------- */
+  var cookieBar = document.getElementById("cookie-bar");
+  if (cookieBar) {
+    var COOKIE_ACK_KEY = "barding_cookie_ack";
+    var cookieAccept = document.getElementById("cookie-accept");
 
-  function dismiss() { bar.classList.remove('visible'); }
+    function setCookieBarHeightVar() {
+      document.documentElement.style.setProperty("--cookie-bar-h", cookieBar.offsetHeight + "px");
+    }
 
-  accept.addEventListener('click', function () {
-    localStorage.setItem('cookie-consent', 'accepted');
-    dismiss();
-  });
+    var cookieAcked = false;
+    try {
+      cookieAcked = localStorage.getItem(COOKIE_ACK_KEY) === "1";
+    } catch (e) {
+      /* localStorage unavailable (privacy mode, disabled storage) — treat
+         as not-yet-acknowledged rather than throwing. */
+    }
 
-  deny.addEventListener('click', function () {
-    localStorage.setItem('cookie-consent', 'denied');
-    dismiss();
-  });
+    /* assigned as a var (not `function syncCookieBarInert(){}`) so the
+       identifier hoists to the whole IIFE — under "use strict" a
+       block-scoped function declaration here would be invisible to
+       refreshSharedInert() above. Keeps the bar out of the tab order/AT
+       whenever it's already acknowledged (nothing to show) OR it's
+       covered by an open overlay (mobile nav/modal), even though those
+       overlays leave `.is-visible`/`has-cookie-bar` untouched. */
+    var syncCookieBarInert = function () {
+      if (!cookieAcked && !isOverlayOpen()) cookieBar.removeAttribute("inert");
+      else cookieBar.setAttribute("inert", "");
+    };
+
+    if (!cookieAcked) {
+      setCookieBarHeightVar();
+      cookieBar.classList.add("is-visible");
+      document.body.classList.add("has-cookie-bar");
+      window.addEventListener("resize", setCookieBarHeightVar);
+    }
+    syncCookieBarInert();
+
+    if (cookieAccept) {
+      cookieAccept.addEventListener("click", function () {
+        cookieBar.classList.remove("is-visible");
+        document.body.classList.remove("has-cookie-bar");
+        window.removeEventListener("resize", setCookieBarHeightVar);
+        cookieAcked = true;
+        syncCookieBarInert();
+        try {
+          localStorage.setItem(COOKIE_ACK_KEY, "1");
+        } catch (e) {
+          /* best-effort — if storage fails the notice just reappears next visit */
+        }
+      });
+    }
+  }
+
+  /* ---------------- hero diamond-grid cursor glow ---------------- */
+  /* Replaces the old hex-lattice canvas (a per-frame requestAnimationFrame
+     draw loop redrawing a full hex grid + radial glow every tick) with the
+     pattern from the pre-redesign site: a static tiled diamond SVG
+     background (.grid-diamond, in the CSS) plus two color layers whose
+     radial-gradient mask is centered on the cursor via --cx/--cy custom
+     properties. No animation loop, no canvas, no per-frame cost — the mask
+     position only updates on actual pointer movement. */
+  var diamondHero = document.querySelector("[data-diamond-cursor]");
+  if (diamondHero) {
+    diamondHero.addEventListener("pointermove", function (e) {
+      var rect = diamondHero.getBoundingClientRect();
+      diamondHero.style.setProperty("--cx", e.clientX - rect.left + "px");
+      diamondHero.style.setProperty("--cy", e.clientY - rect.top + "px");
+    });
+    diamondHero.addEventListener("pointerleave", function () {
+      diamondHero.style.setProperty("--cx", "-999px");
+      diamondHero.style.setProperty("--cy", "-999px");
+    });
+  }
 })();

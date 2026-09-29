@@ -1,0 +1,8 @@
+# Internal design scratch — never part of the published site
+.archive/
+Claude outputs/
+.to-delete/
+
+# OS junk
+.DS_Store
+Thumbs.db
