@@ -2,6 +2,7 @@
 .archive/
 Claude outputs/
 .to-delete/
+README.md
 
 # OS junk
 .DS_Store
