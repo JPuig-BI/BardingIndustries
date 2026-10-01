@@ -1,0 +1,233 @@
+/* ==========================================================================
+   Barding Industries — team digital business card.
+   A small, self-contained stylesheet (not a dependency on the main site's
+   assets/css/styles.css) so this card stays lightweight and isolated from
+   marketing-page rules that don't apply here (nav, hero, sections, etc.).
+   Tokens below are copied from styles.css's :root block on purpose, not
+   imported — keep them in sync by hand if the main site's palette changes.
+   ========================================================================== */
+
+:root{
+  --crimson-bright: #d33540;
+  --crimson-text:   #dd6069;
+
+  --ink:          #1b1718;
+  --ink-surface:  #241f20;
+  --ink-surface-2:#2f2829;
+  --ink-line:     rgba(244,240,235,.14);
+  --ink-line-2:   rgba(244,240,235,.08);
+  --ink-text:     #f4f0eb;
+  --ink-muted:    rgba(244,240,235,.66);
+  --ink-faint:    rgba(244,240,235,.55);
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --radius: 3px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*, *::before, *::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0;
+  font-family:var(--font-body);
+  color:var(--ink-text);
+  background-color:var(--ink);
+  background-image:radial-gradient(circle, rgba(211,53,64,.10) 1px, transparent 1px);
+  background-size:28px 28px;
+  -webkit-font-smoothing:antialiased;
+}
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; cursor:pointer; }
+ul{ margin:0; padding:0; list-style:none; }
+h1,h2,h3,p{ margin:0; }
+img{ max-width:100%; display:block; }
+
+body.card-body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  min-height:100dvh;
+  padding:20px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .business-card{ animation:none; opacity:1; transform:none; }
+}
+
+.business-card{
+  background-color:var(--ink-surface);
+  border:1px solid var(--ink-line);
+  border-radius:var(--radius);
+  width:100%;
+  max-width:400px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.45);
+  animation:card-enter .5s var(--ease) both;
+}
+@keyframes card-enter{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.business-card::before{
+  content:'';
+  position:absolute;
+  top:0; left:28px; right:28px;
+  height:1px;
+  background:linear-gradient(90deg, transparent, var(--crimson-bright), transparent);
+  opacity:.7;
+}
+
+.card-content{ position:relative; z-index:10; padding:34px 28px; }
+
+/* ---- Brand mark ---- */
+.card-brand{
+  display:flex;
+  justify-content:center;
+  margin-bottom:22px;
+}
+.card-brand img{ height:20px; width:auto; opacity:.92; }
+
+/* ---- Header ---- */
+.card-header{ text-align:center; margin-bottom:26px; }
+
+.profile-img-container{
+  width:108px;
+  height:108px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  overflow:hidden;
+  border:2px solid var(--ink-line);
+}
+.profile-img{ width:100%; height:100%; object-fit:cover; }
+
+.card-header .name{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:1.55rem;
+  letter-spacing:-0.01em;
+  margin-bottom:4px;
+}
+.card-header .role{
+  font-size:.86rem;
+  color:var(--crimson-text);
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin-bottom:8px;
+}
+.card-header .credential{
+  font-family:var(--font-mono);
+  font-size:.74rem;
+  color:var(--ink-faint);
+  letter-spacing:.02em;
+  margin-bottom:10px;
+}
+.card-header .tagline{
+  font-style:italic;
+  color:var(--ink-muted);
+  font-size:.86rem;
+}
+
+/* ---- Sections ---- */
+.card-section{ margin-bottom:22px; }
+.card-section .section-title{
+  font-family:var(--font-mono);
+  font-size:.68rem;
+  font-weight:500;
+  color:var(--ink-muted);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:12px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--ink-line);
+}
+
+.info-list li{
+  font-size:.92rem;
+  margin-bottom:11px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  color:var(--ink-text);
+}
+.info-list li:last-child{ margin-bottom:0; }
+
+.icon{ font-size:.88rem; width:16px; text-align:center; flex-shrink:0; color:var(--crimson-bright); }
+.hint{ font-size:.76rem; color:var(--ink-faint); }
+
+.contact-link{ color:var(--ink-text); transition:color .2s var(--ease); display:inline-block; }
+.contact-link:hover{ color:var(--crimson-text); }
+
+@media (pointer: fine){
+  .contact-item{ position:relative; }
+  .contact-link:hover::after{
+    content:" (copy)";
+    font-size:.74rem;
+    color:var(--ink-faint);
+  }
+}
+
+/* ---- Social links ---- */
+.social-links{
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  margin-bottom:26px;
+}
+.social-icon{
+  color:var(--ink-muted);
+  font-size:1.2rem;
+  transition:color .2s var(--ease);
+}
+.social-icon:hover{ color:var(--crimson-text); }
+
+/* ---- Footer ---- */
+.card-footer{ display:flex; flex-direction:column; gap:13px; text-align:center; }
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:12px 20px;
+  border-radius:var(--radius);
+  font-size:.92rem;
+  font-weight:600;
+  border:1px solid transparent;
+  transition:all .2s var(--ease);
+}
+.btn-primary{ background-color:var(--crimson-bright); color:var(--ink-text); }
+.btn-primary:hover{ background-color:var(--crimson-text); }
+
+.btn-text{ color:var(--ink-muted); font-size:.88rem; font-weight:600; }
+.btn-text:hover{ color:var(--crimson-text); }
+
+.card-updated{ font-size:.72rem; color:var(--ink-faint); margin-top:4px; }
+
+/* ---- Toast ---- */
+.toast{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background-color:var(--crimson-bright);
+  color:var(--ink-text);
+  padding:8px 16px;
+  border-radius:20px;
+  font-size:.85rem;
+  font-weight:600;
+  opacity:1;
+  transition:opacity .3s var(--ease);
+  z-index:100;
+  white-space:nowrap;
+}
+.toast.hidden{ opacity:0; pointer-events:none; }
+
+/* ---- Loading-state skeleton (until card.js renders CARD_DATA) ---- */
+[data-card-field]:empty{ opacity:0; }

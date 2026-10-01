@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#1b1718" />
+<meta name="color-scheme" content="dark" />
+
+<title>Jaume Puig | Barding Industries</title>
+<!-- Kept off search engines & out of site nav/sitemap on purpose (unlisted, QR-code business card) -->
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Digital business card for Jaume Puig, Chief Technology Officer at Barding Industries. Save contact or connect online." />
+<link rel="canonical" href="https://bardingindustries.com/team/jaume-contact.html" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/logo_sq.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/img/logo_sq.png" />
+
+<meta property="og:type" content="profile" />
+<meta property="og:title" content="Jaume Puig | Barding Industries" />
+<meta property="og:description" content="Chief Technology Officer at Barding Industries. Save contact or connect online." />
+<meta property="og:image" content="https://bardingindustries.com/assets/img/team/jpuig-cto.webp" />
+<meta property="og:url" content="https://bardingindustries.com/team/jaume-contact.html" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Jaume Puig | Barding Industries" />
+<meta name="twitter:description" content="Chief Technology Officer at Barding Industries. Save contact or connect online." />
+<meta name="twitter:image" content="https://bardingindustries.com/assets/img/team/jpuig-cto.webp" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" /></noscript>
+
+<link rel="stylesheet" href="assets/css/card.css" />
+</head>
+<body class="card-body">
+
+  <main class="business-card">
+    <div class="card-content">
+
+      <div class="card-brand">
+        <a href="https://bardingindustries.com" aria-label="Barding Industries">
+          <img src="../assets/img/logo.png" alt="Barding Industries" />
+        </a>
+      </div>
+
+      <header class="card-header">
+        <div class="profile-img-container" data-card-field="photo"></div>
+        <h1 class="name" data-card-field="name"></h1>
+        <h2 class="role" data-card-field="role"></h2>
+        <p class="credential" data-card-field="credential"></p>
+        <p class="tagline" data-card-field="tagline"></p>
+      </header>
+
+      <section class="card-section" data-card-section="affiliations">
+        <h2 class="section-title">Affiliations</h2>
+        <ul class="info-list" role="list"></ul>
+      </section>
+
+      <section class="card-section">
+        <h2 class="section-title">Contact</h2>
+        <ul class="info-list contact-list" role="list" data-card-field="contact-list"></ul>
+      </section>
+
+      <div class="social-links" aria-label="Social profiles" data-card-field="socials"></div>
+
+      <footer class="card-footer">
+        <button data-save-contact class="btn btn-primary" aria-label="Save Jaume Puig to contacts">
+          <i class="fa-solid fa-address-card" aria-hidden="true"></i> Save Contact
+        </button>
+        <a href="#" class="btn-text" data-card-field="primary-link"></a>
+        <p class="card-updated" data-card-field="updated"></p>
+      </footer>
+
+    </div>
+
+    <div id="copy-toast" class="toast hidden" aria-live="polite">Copied to clipboard</div>
+  </main>
+
+  <script>
+    const CARD_DATA = {
+      name: "Jaume Puig",
+      role: "Chief Technology Officer",
+      credential: "Space Radiobiology · Laurentian University / SNOLAB",
+      tagline: "Biomedical engineer building hardware for extreme environments, including microgravity.",
+      photo: { src: "../assets/img/team/jpuig-cto.webp", alt: "Jaume Puig" },
+      affiliations: [],
+      contacts: [
+        {
+          icon: "fa-solid fa-envelope",
+          value: "jaume.puig98@gmail.com",
+          href: "mailto:jaume.puig98@gmail.com",
+          copyValue: "jaume.puig98@gmail.com",
+          copyHint: "Click to copy on desktop, tap to email on mobile"
+        }
+        /* No phone number on this card by default — add one here the same
+           way if you want it listed, e.g.:
+        {
+          icon: "fa-solid fa-phone",
+          value: "(+1) 249-879-9837",
+          href: "tel:+12498799837",
+          copyValue: "+12498799837",
+          hint: "Direct",
+          copyHint: "Click to copy on desktop, tap to call on mobile"
+        }
+        */
+      ],
+      socials: [
+        { icon: "fa-brands fa-linkedin-in", href: "https://linkedin.com/in/jaume-puig/", label: "LinkedIn" }
+      ],
+      primaryLink: { text: "Visit Barding Industries ▸", href: "https://bardingindustries.com" },
+      updated: "September 2026",
+      vcard: {
+        org: "Barding Industries, Inc.",
+        title: "Chief Technology Officer",
+        photoScript: "assets/photos/jaume-photo.js",
+        urls: [{ label: "Company", url: "https://bardingindustries.com" }]
+      }
+    };
+  </script>
+  <script src="assets/js/card.js"></script>
+</body>
+</html>
